@@ -16,5 +16,22 @@ function check([ hClues, vClues, field ]) {
   	return false;
   }
 
+  for (let i = 0; i < hClues.length; i++) {
+    const rowClues = hClues[i];
+    let clueIndex = 0;
+    let clue = 0;
+    for (let j = 0; j < vClues.length; j++) {
+     if (field[i * vClues.length + j]) {
+       ++clue;
+     } else if (clue > 0) {
+       if (rowClues[clueIndex] !== clue) {
+         return false;
+       }
+       clue = 0;
+       clueIndex++;
+     }
+    }
+  }
+
   return true;
 }
