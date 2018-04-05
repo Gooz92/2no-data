@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-const DATA_FOLDER = './data/bw/5x5';
+const DATA_FOLDER = './data/bw/5x5/';
 
 const files = fs.readdirSync(DATA_FOLDER);
 
