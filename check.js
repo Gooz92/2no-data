@@ -33,5 +33,7 @@ function check([ hClues, vClues, field ]) {
     }
   }
 
+  for (let )
+
   return true;
 }
