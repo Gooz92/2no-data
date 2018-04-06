@@ -37,5 +37,26 @@ function check([ hClues, vClues, field ]) {
     }
   }
 
+  for (let j = 0; j < vClues.length; j++) {
+    const colClues = vClues[j];
+    let clueIndex = 0;
+    let clue = 0;
+    for (let i = 0; i < hClues.length; i++) {
+      if (field[i * vClues.length + j]) {
+        ++clue;
+      } else if (clue > 0) {
+        if (colClues[clueIndex] !== clue) {
+          return false;
+        }
+        clue = 0;
+        clueIndex++;
+      }
+    }
+
+    if (clue > 0 && colClues[clueIndex] !== clue) {
+      return false;
+    }
+  }
+
   return true;
 }
