@@ -1,5 +1,3 @@
-const data = require('./data/color/small/fish.json')
-
 function roundColor(colorCode) {
   const channels = [
     colorCode.substring(0, 2),
@@ -18,7 +16,7 @@ const stringifyBwClues = clues => (
   clues
     .map(sideClues => (
       sideClues
-        .map(lineClues => lineClues.join(','))
+        .map(lineClues => lineClues.map(clue => clue.toString(32)).join(','))
         .join(';')
     ))
     .join('/')
@@ -41,7 +39,7 @@ const parseBwClues = clues => (
       sideClues.split(';')
         .map(lineClues =>
           lineClues.split(',')
-            .map(clue => +clue)
+            .map(clue => parseInt(clue, 32))
         )
     )
 );
@@ -56,3 +54,6 @@ const parseColorClues = clues => (
         )
     )
 );
+
+
+module.exports = { stringifyBwClues, parseBwClues };

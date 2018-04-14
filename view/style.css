@@ -1,0 +1,18 @@
+.field {
+  border: 1px solid #444;
+  display: flex;
+  flex-flow: wrap;
+}
+
+.field div {
+  border-color: #eee;
+  border-style: solid;
+}
+
+.field .right-border {
+  border-right-width: 1px;
+}
+
+.field .bottom-border {
+  border-bottom-width: 1px;
+}
