@@ -29,19 +29,34 @@ function buildField(colCount, rowCount, cellSize) {
     }
   });
 
-  for (let i = 0; i < colCount; i++) {
-    for (let j = 1; j < rowCount; j++) {
+  for (let i = 0; i < rowCount; i++) {
+    for (let j = 0; j < colCount; j++) {
+
+      const classes = [];
+
+      const isLastRow = i === rowCount - 1;
+      const isLastCol = j === colCount - 1;
+
+      if (!isLastRow) {
+        classes.push('bottom-border');
+      }
+
+      if (!isLastCol) {
+        classes.push('right-border');
+      }
+
       const cell = createDiv({
         styles: {
-          width: innerCellSize,
-          height: innerCellSize
-        }
+          width: `${cellSize - (isLastCol ? 0 : 1)}px`,
+          height: `${cellSize - (isLastRow ? 0 : 1)}px`
+        },
+        className: classes.join(' ')
       });
   
       field.appendChild(cell);
     }
   }
-
+  
   return field;
 }
 

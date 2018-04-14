@@ -6,13 +6,16 @@
 
 .field div {
   border-color: #eee;
-  border-style: solid;
 }
 
 .field .right-border {
-  border-right-width: 1px;
+  border-right: 1px solid #eee;
 }
 
 .field .bottom-border {
-  border-bottom-width: 1px;
+  border-bottom: 1px solid #eee;
+}
+
+.field .filled {
+  background-color: #000;
 }
