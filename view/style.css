@@ -1,19 +1,31 @@
-.field {
-  border: 1px solid #444;
+.nonogram, .field {
   display: flex;
   flex-flow: wrap;
 }
 
-.field div {
-  border-color: #eee;
+.nonogram {
+  border: 1px solid #000;
+}
+
+.nonogram .v-clues {
+  border-bottom: 1px solid #444;
+}
+
+.nonogram .h-clues {
+  border-right: 1px solid #444;
+}
+
+.nonogram .corner {
+  border-right: 1px solid #444;
+  border-bottom: 1px solid #444;
 }
 
 .field .right-border {
-  border-right: 1px solid #eee;
+  border-right: 1px solid #999;
 }
 
 .field .bottom-border {
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid #999;
 }
 
 .field .filled {
