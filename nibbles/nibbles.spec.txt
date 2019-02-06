@@ -1,0 +1,29 @@
+nibbles -> r64
+
+Tail = 0
+
+abcd abcd abcd
+abcdab  cdabcd (number of r64 is even)
+
+Tail = 1
+
+abcd abcd abcd    abcd
+abcdab  abcdab  00abcd (00abcd < 16; number of r64 is odd)
+
+Tail = 2
+
+abcd abcd abcd   abcd abcd
+abcdab  cdabcd   abcdab 0000cd xy0000 (xy0000 >= 16; number of r64 is odd)
+
+r64 -> nibbles
+
+% 2 = 0
+
+abcdef abcdef
+abcd efab cdef
+
+% 2 = 1
+
+abcdef abcdef   abcdef
+abcd efab cdef  abcdef < 16 ? cdef (ab = 00)
+                : 0000               

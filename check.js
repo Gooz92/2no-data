@@ -1,13 +1,11 @@
 const fileUtils = require('./file.utils.js');
 
 const DATA_FOLDER = './data/bw/';
-const { stringifyBwClues, parseBwClues } = require('./utils.js');
+const { stringifyBwClues } = require('./utils.js');
 
 fileUtils.forEachFile(DATA_FOLDER , file => {
   const nonogram = require(file);
   const clues = [ nonogram[0], nonogram[1] ];
-
-  const strClues = stringifyBwClues(clues);
 
   console.log(file + ' ' + (check(nonogram) ? 'v' : 'x') + ' ' + stringifyBwClues(clues).length + ' ' + JSON.stringify(clues).length);
 });
