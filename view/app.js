@@ -37,8 +37,6 @@ function createElement(tagName, options = {}) {
 const createDiv = options => createElement('div', options);
 
 function appendCells(field, colCount, rowCount, cellSize) {
-  const width = colCount * cellSize;
-  const height = rowCount * cellSize;
 
   for (let i = 0; i < rowCount; i++) {
     for (let j = 0; j < colCount; j++) {

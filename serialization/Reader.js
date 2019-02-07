@@ -6,12 +6,12 @@ class Reader {
   }
 
   nextNumber() {
-    const nibblesCount = nibbles[this.position];
+    const nibblesCount = this.nibbles[this.position];
 
     let number = 0, index = 0;
 
     while (index++ < nibblesCount) {
-      number += nibbles[this.position + index] * Math.pow(16, index - 1);
+      number += this.nibbles[this.position + index] * Math.pow(16, index - 1);
     }
 
     this.position += nibblesCount + 1;
