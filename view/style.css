@@ -1,6 +1,18 @@
-.nonogram, .field {
+.nonogram, .field, .v-clues, .h-clues {
   display: flex;
   flex-flow: wrap;
+}
+
+.v-clues div,
+.h-clues div {
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  min-height: 40px;
+  line-height: 40px;
+  font-size: 40px;
+  text-align: center;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
 .nonogram {
@@ -20,14 +32,14 @@
   border-bottom: 1px solid #444;
 }
 
-.field .right-border {
+.nonogram .right-border {
   border-right: 1px solid #999;
 }
 
-.field .bottom-border {
+.nonogram .bottom-border {
   border-bottom: 1px solid #999;
 }
 
-.field .filled {
+.nonogram .filled {
   background-color: #000;
 }

@@ -1,4 +1,4 @@
-const [ hClues, vClues ] = require('../data/bw/house-7x7.json');
+const [ hClues, vClues ] = require('../data/bw/1.json');
 
 const px = value => `${value}px`;
 
@@ -36,7 +36,7 @@ function createElement(tagName, options = {}) {
 
 const createDiv = options => createElement('div', options);
 
-function appendCells(field, colCount, rowCount, cellSize) {
+function appendCells(field, colCount, rowCount, cellSize, options = {}) {
 
   for (let i = 0; i < rowCount; i++) {
     for (let j = 0; j < colCount; j++) {
@@ -59,7 +59,8 @@ function appendCells(field, colCount, rowCount, cellSize) {
           width: cellSize - (isLastCol ? 0 : 1),
           height: cellSize - (isLastRow ? 0 : 1)
         },
-        className: classes.join(' ')
+        className: classes.join(' '),
+        ...options
       });
   
       field.appendChild(cell);
@@ -70,6 +71,26 @@ function appendCells(field, colCount, rowCount, cellSize) {
 const findLongestClueLength = clues => (
   Math.max(...clues.map(clue => clue.length))
 );
+
+function appendVClues(container, clues, height) {
+  for (let i = 0; i < clues.length; i++) {
+    const dh = height - clues[i].length;
+    for (let j = 0; j < clues[i].length; j++) {
+      const index = clues.length * (dh + j) + i;
+      container.childNodes[index].innerHTML = clues[i][j];
+    }
+  }
+}
+
+function appendHClues(container, clues, width) {
+  for (let i = 0; i < clues.length; i++) {
+    const dw = width - clues[i].length;
+    for (let j = 0; j < clues[i].length; j++) {
+      const index = width * i + dw + j;
+      container.childNodes[index].innerHTML = clues[i][j];
+    }
+  }
+}
 
 function buildNonogram(hClues, vClues, cellSize) {
   const vCluesHeight = findLongestClueLength(vClues) * cellSize;
@@ -121,7 +142,15 @@ function buildNonogram(hClues, vClues, cellSize) {
     }
   });
 
-  appendCells(field, vClues.length, hClues.length, cellSize);
+  appendCells(field, vClues.length, hClues.length, cellSize, {
+    onclick: e => {
+      e.target.style.backgroundColor = 'black';
+    }
+  });
+  appendCells(vCluesContainer, vClues.length, findLongestClueLength(vClues), cellSize);
+  appendVClues(vCluesContainer, vClues, findLongestClueLength(vClues));
+  appendCells(hCluesContainer, findLongestClueLength(hClues), hClues.length, cellSize);
+  appendHClues(hCluesContainer, hClues, findLongestClueLength(hClues));
 
   nonogram.appendChild(corner);
   nonogram.appendChild(vCluesContainer);
@@ -132,6 +161,6 @@ function buildNonogram(hClues, vClues, cellSize) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  const nonogram = buildNonogram(hClues, vClues, 20);
+  const nonogram = buildNonogram(hClues, vClues, 42);
   document.body.appendChild(nonogram);
 });
