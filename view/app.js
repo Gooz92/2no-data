@@ -1,4 +1,4 @@
-const [ hClues, vClues ] = require('../data/bw/1.json');
+const [ hClues, vClues ] = require('../data/bw/5x5/cat.json');
 
 const px = value => `${value}px`;
 
