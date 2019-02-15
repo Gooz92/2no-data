@@ -1,42 +1,9 @@
+import { createDiv } from './utils.js';
+import { buildNonogram } from '../solve.js';
+
 const [ hClues, vClues ] = require('../data/bw/5x5/cat.json');
 
-const px = value => `${value}px`;
-
-const valueFn = value => value;
-
-const cssValueConverters = {
-  width: px,
-  height: px
-};
-
-function createElement(tagName, options = {}) {
-  const element = document.createElement(tagName);
-
-  const properties = Object.keys(options)
-    .filter(key => key !== 'styles')
-    .reduce((props, key) => ({
-      ...props,
-      [ key ]: options[key]
-    }), {});
-  
-  Object.assign(element, properties);
-  
-  const styles = options.styles || {};
-
-  const adaptedStyles = Object.keys(styles)
-    .reduce((acc, key) => ({
-      ...acc,
-      [key]: (cssValueConverters[key] || valueFn)(styles[key])
-    }), {})
-
-  Object.assign(element.style, adaptedStyles);
-
-  return element;
-}
-
-const createDiv = options => createElement('div', options);
-
-function appendCells(field, colCount, rowCount, cellSize, options = {}) {
+function appendCells(field, colCount, rowCount, cellSize, getOptions = () => ({})) {
 
   for (let i = 0; i < rowCount; i++) {
     for (let j = 0; j < colCount; j++) {
@@ -60,7 +27,7 @@ function appendCells(field, colCount, rowCount, cellSize, options = {}) {
           height: cellSize - (isLastRow ? 0 : 1)
         },
         className: classes.join(' '),
-        ...options
+        ...getOptions()
       });
   
       field.appendChild(cell);
@@ -92,7 +59,11 @@ function appendHClues(container, clues, width) {
   }
 }
 
-function buildNonogram(hClues, vClues, cellSize) {
+function buildField(nonogram, cellSize) {
+
+  const vClues = nonogram.colClues;
+  const hClues = nonogram.rowClues;
+
   const vCluesHeight = findLongestClueLength(vClues) * cellSize;
   const hCluesWidth = findLongestClueLength(hClues) * cellSize;
 
@@ -102,7 +73,7 @@ function buildNonogram(hClues, vClues, cellSize) {
   const nonogramWidth = fieldWidth + hCluesWidth + 1;
   const nonogramHeight = fieldHeight + vCluesHeight + 1;
 
-  const nonogram = createDiv({
+  const container = createDiv({
     className: 'nonogram',
     styles: {
       width: nonogramWidth,
@@ -142,25 +113,29 @@ function buildNonogram(hClues, vClues, cellSize) {
     }
   });
 
-  appendCells(field, vClues.length, hClues.length, cellSize, {
+  appendCells(field, vClues.length, hClues.length, cellSize, (i, j) => ({
+    styles: {
+      backgroundColor: nonogram.rows[i][j].value ? 'black' : 'white'
+    },
     onclick: e => {
       e.target.style.backgroundColor = 'black';
     }
-  });
+  }));
+
   appendCells(vCluesContainer, vClues.length, findLongestClueLength(vClues), cellSize);
   appendVClues(vCluesContainer, vClues, findLongestClueLength(vClues));
   appendCells(hCluesContainer, findLongestClueLength(hClues), hClues.length, cellSize);
   appendHClues(hCluesContainer, hClues, findLongestClueLength(hClues));
 
-  nonogram.appendChild(corner);
-  nonogram.appendChild(vCluesContainer);
-  nonogram.appendChild(hCluesContainer);
-  nonogram.appendChild(field);
+  container.appendChild(corner);
+  container.appendChild(vCluesContainer);
+  container.appendChild(hCluesContainer);
+  container.appendChild(field);
 
-  return nonogram;
+  return container;
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  const nonogram = buildNonogram(hClues, vClues, 42);
-  document.body.appendChild(nonogram);
+  const nonogram = buildNonogram(hClues, vClues);
+  console.log(nonogram);
 });

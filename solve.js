@@ -1,4 +1,4 @@
-const { forEachFile } = require('./file.utils.js');
+// const { forEachFile } = require('./file.utils.js');
 
 function generateArray(length, generateItem) {
   const array = [];
@@ -34,21 +34,63 @@ function getLefts(clues, length) {
   return lefts.map(left => length - left - 1);
 }
 
-function buildField(colCount, rowCount) {
-  const rows = generateArray(rowCount, () => generateArray(colCount, () => ({})));
-  const cols = generateArray(colCount, () => []);
+function maxBounds(clues, length) {
+  const maxLefts = [ 0 ];
+  const maxRights = [ length - 1 ];
+
+  let left = 0, right = length - 1;
+
+  for (let i = 0; i < clues.length - 1; i++) {
+    maxLefts.push(left += clues[i] + 1);
+    maxRights.unshift(right -= clues[clues.length - i - 1] + 1);
+  }
+
+  return maxLefts.map((left, index) => [left, maxRights[index]]);
+}
+
+export function buildNonogram(rowClues, colClues) {
+
+  const rows = generateArray(rowCount, rowIndex => ({
+    clues: rowClues[rowIndex],
+    cells: generateArray(colCount, () => ({}))
+  }));
+  
+  const cols = generateArray(colCount, colIndex => ({
+    clues: colClues[colIndex],
+    cells: []
+  }));
 
   for (let i = 0; i < rowCount; i++) {
     for (let j = 0; j < colCount; j++) {
-      cols[j][i] = rows[i][j];
+      cols[j].cells[i] = rows[i][j];
     }
   }
 
-  return { rows, cols, lines: [ ...rows, ...cols ] };
+  return {
+    rowClues, colClues,
+    rows, cols,
+    lines: [ ...rows, ...cols ]
+  };
 }
 
-forEachFile('./data/bw', file => {
-  console.log(file);
-  const [ hClues, vClues ] = require(file);
-  const field = buildField(vClues.length, hClues.length);
-});
+export function solve(nonogram) {
+  nonogram.lines.forEach(line => {
+    const bounds = maxBounds(line.clues, line.cells.length);
+
+    bounds.forEach(([ left, right ], index) => {
+      const clue = line.clues[index];
+
+      for (let i = right - clue - 1; i < left + clue; i++) {
+        line.cells[i].value = 1;
+      }
+
+    });
+
+  });
+}
+
+const clues = [ 1, 2, 3 ], length = 9;
+
+const bounds = maxBounds(clues, length);
+
+console.log(bounds);
