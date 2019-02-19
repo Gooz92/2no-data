@@ -1,7 +1,7 @@
-import { createDiv } from './utils.js';
-import { buildNonogram } from '../solve.js';
+import { createDiv, omit } from './utils.js';
+import { buildNonogram, solve } from '../solve.js';
 
-const [ hClues, vClues ] = require('../data/bw/5x5/cat.json');
+const [ hClues, vClues ] = require('../data/bw/house-7x7.json');
 
 function appendCells(field, colCount, rowCount, cellSize, getOptions = () => ({})) {
 
@@ -21,13 +21,17 @@ function appendCells(field, colCount, rowCount, cellSize, getOptions = () => ({}
         classes.push('right-border');
       }
 
+      const options = getOptions(i, j);
+      const attributes = omit(options, ['styles', 'classes']);
+
       const cell = createDiv({
+        className: (options.classes || []).concat(classes).join(' '),
         styles: {
           width: cellSize - (isLastCol ? 0 : 1),
-          height: cellSize - (isLastRow ? 0 : 1)
+          height: cellSize - (isLastRow ? 0 : 1),
+          ...options.styles
         },
-        className: classes.join(' '),
-        ...getOptions()
+        ...attributes
       });
   
       field.appendChild(cell);
@@ -114,11 +118,15 @@ function buildField(nonogram, cellSize) {
   });
 
   appendCells(field, vClues.length, hClues.length, cellSize, (i, j) => ({
-    styles: {
-      backgroundColor: nonogram.rows[i][j].value ? 'black' : 'white'
-    },
+    classes: [['unknown', 'filled', 'empty'][nonogram.rows[i].cells[j].value]],
     onclick: e => {
-      e.target.style.backgroundColor = 'black';
+      e.target.classList.remove('empty');
+      e.target.classList.toggle('filled');
+    },
+    oncontextmenu: e => {
+      e.preventDefault();
+      e.target.classList.remove('filled');
+      e.target.classList.toggle('empty');
     }
   }));
 
@@ -137,5 +145,7 @@ function buildField(nonogram, cellSize) {
 
 document.addEventListener('DOMContentLoaded', () => {
   const nonogram = buildNonogram(hClues, vClues);
-  console.log(nonogram);
+  solve(nonogram);
+  const field = buildField(nonogram, 42);
+  document.body.appendChild(field);
 });

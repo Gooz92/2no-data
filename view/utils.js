@@ -33,3 +33,13 @@ export function createElement(tagName, options = {}) {
 }
 
 export const createDiv = options => createElement('div', options);
+
+export function omit(obj, propertyName) {
+  const omittedProps = Array.isArray(propertyName) ? propertyName : [ propertyName ];
+  return Object.keys(obj)
+    .filter(key => !omittedProps.includes(key))
+    .reduce((result, key) => ({
+      ...result,
+      [ key ] : obj[key]
+    }), {});
+}

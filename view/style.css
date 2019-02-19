@@ -34,13 +34,20 @@
 }
 
 .nonogram .right-border {
-  border-right: 1px solid #999;
+  border-right: 1px solid #888;
 }
 
 .nonogram .bottom-border {
-  border-bottom: 1px solid #999;
+  border-bottom: 1px solid #888;
 }
 
 .nonogram .filled {
   background-color: #000;
+}
+
+.nonogram .empty {
+  background-image: url('cross.svg');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover; 
 }
