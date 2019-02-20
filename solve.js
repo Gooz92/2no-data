@@ -34,6 +34,29 @@ function getBounds(clues, length) {
   };
 }
 
+function joinBlocks(line, bounds) {
+  line.clues.forEach((clue, index) => {
+    const [ left, right ] = bounds.min[index];
+
+    let startIndex = left,
+      endIndex = left;
+
+    for (let i = left; i <= right; i++) {
+      if (line.cells[i].value === 1) {
+        if (startIndex === left) startIndex = i;
+        endIndex = i;
+      }
+    }
+
+    if (startIndex === endIndex) return;
+
+    for (let i = startIndex; i <= endIndex; i++) {
+      line.cells[i].value = 1;
+    }
+
+  });
+}
+
 function step(line, bounds) {
   line.clues.forEach((clue, index) => {
     const [ left, right ] = bounds.min[index];
@@ -102,7 +125,7 @@ export function solve(nonogram) {
   });
 
   nonogram.lines.forEach(line => {
-    debugger;
+    joinBlocks(line, line.bounds);
     step(line, line.bounds);
   });
 }

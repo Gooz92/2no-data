@@ -8,7 +8,9 @@ function parseClues(rawClues) {
   rawClues.forEach(sideClues => {
     const index = sideClues.$.type === 'rows' ? 0 : 1;
 
-    clues[index] = sideClues.line.map(({ count }) => (count || []).map(c => +c));
+    clues[index] = sideClues.line
+      .map(({ count }) => (count || [])
+      .map(c => +c));
   });
 
   return clues;
