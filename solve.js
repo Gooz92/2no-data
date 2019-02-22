@@ -1,5 +1,3 @@
-// const { forEachFile } = require('./file.utils.js');
-
 function generateArray(length, generateItem) {
   const array = [];
 
@@ -34,6 +32,12 @@ function getBounds(clues, length) {
   };
 }
 
+function narrowBounds(line, bounds) {
+  line.clues.forEach((clue, index) => {
+    
+  });
+}
+
 function joinBlocks(line, bounds) {
   line.clues.forEach((clue, index) => {
     const [ left, right ] = bounds.min[index];
@@ -58,6 +62,9 @@ function joinBlocks(line, bounds) {
 }
 
 function step(line, bounds) {
+
+  let changed = false;
+
   line.clues.forEach((clue, index) => {
     const [ left, right ] = bounds.min[index];
 
@@ -68,20 +75,30 @@ function step(line, bounds) {
         if (blockLength === 0) startIndex = i;
         ++blockLength;
       } else if (blockLength === clue) {
+        changed = true;
         line.cells[i].value = 2;
       }
     }
 
-    if (blockLength !== clue) {
-      return;
+    if (blockLength === 0) return;
+
+    const delta = clue - blockLength;
+
+    const start = startIndex - delta;
+    const end = startIndex + blockLength + delta;
+
+    for (let i = left; i < start; i++) {
+      changed = true;
+      line.cells[i].value = 2;
     }
 
-    if (startIndex - 1 >= 0) line.cells[startIndex - 1].value = 2;
-
-    for (let i = left; i < startIndex; i++) {
+    for (let i = right; i >= end; i--) {
+      changed = true;
       line.cells[i].value = 2;
     }
   });
+
+  return changed;
 }
 
 export function buildNonogram(rowClues, colClues) {
@@ -110,6 +127,7 @@ export function buildNonogram(rowClues, colClues) {
 }
 
 export function solve(nonogram) {
+
   nonogram.lines.forEach(line => {
     line.bounds = getBounds(line.clues, line.cells.length);
 
@@ -129,7 +147,3 @@ export function solve(nonogram) {
     step(line, line.bounds);
   });
 }
-
-const bounds = getBounds([ 3, 2 ], 9);
-
-console.log(bounds);
