@@ -31,13 +31,23 @@ function calculateBounds(clues, length) {
   });
 }
 
+function markAsFilled(line, index, filled) {
+  const cell = line.cells[index];
+
+  if (cell.value === 0) {
+    cell.value = 1;
+    filled.push(index);
+  } else {
+    throw line;
+  }
+}
+
 function solveBounds(line) {
   const filled = [];
 
   line.clues.forEach(({ value, bounds: { max: { left, right } } }) => {
     for (let i = right - value + 1; i < left + value; i++) {
-      line.cells[i].value = 1;
-      filled.push(i);
+      markAsFilled(line, i, filled);
     }
   });
 
@@ -61,8 +71,7 @@ function joinBlocks(line) {
     if (startIndex === endIndex) return;
 
     for (let i = startIndex; i <= endIndex; i++) {
-      line.cells[i].value = 1;
-      filled.push(i);
+      markAsFilled(line, i, filled);
     }
   });
 
@@ -133,40 +142,23 @@ function narrowBounds(line) {
     bounds.max.left = left;
     bounds.max.right = right;
 
-    // if (left > bounds.min.left) {
+    if (left > bounds.min.left) {
      
-    //   bounds.min.left = left;
+      bounds.min.left = left;
 
-    //   if (bounds.min.right - bounds.min.left + 1 < value) {
-    //     bounds.min.right = bounds.min.left + value - 1;
-    //   }
-    // }
+      if (bounds.min.right - bounds.min.left + 1 < value) {
+        bounds.min.right = bounds.min.left + value - 1;
+      }
+    }
 
-    // if (right < bounds.min.right) {
-    //   bounds.min.right = right;
+    if (right < bounds.min.right) {
+      bounds.min.right = right;
 
-    //   if (bounds.min.right - bounds.min.left + 1 < value) {
-    //     bounds.min.left = bounds.min.right - value + 1;
-    //   }
-    // }
+      if (bounds.min.right - bounds.min.left + 1 < value) {
+        bounds.min.left = bounds.min.right - value + 1;
+      }
+    }
   }));
-
-  line.clues.forEach(({ value, bounds }) => {
-    let { left, right } = bounds.min;
-
-    if (right === 2) debugger;
-
-    while (line.cells[left].value === 2) {
-      ++left;
-    }
-
-    while (line.cells[right].value === 2) {
-      --right;
-    }
-    
-    bounds.min.left = left;
-    bounds.min.right = right;
-  });
 }
 
 export function buildNonogram(rawRowClues, rawColClues) {
@@ -178,7 +170,9 @@ export function buildNonogram(rawRowClues, rawColClues) {
     calculateBounds(rowClues[rowIndex], colClues.length);
     return {
       clues: rowClues[rowIndex],
-      cells: generateArray(colClues.length, () => ({}))
+      cells: generateArray(colClues.length, () => ({})),
+      side: 0,
+      index: rowIndex
     };
   });
   
@@ -186,7 +180,9 @@ export function buildNonogram(rawRowClues, rawColClues) {
     calculateBounds(colClues[colIndex], rowClues.length);
     return {
       clues: colClues[colIndex],
-      cells: []
+      cells: [],
+      side: 0,
+      index: colIndex
     };
   });
 

@@ -158,9 +158,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }, empty => {
       empty.forEach(([i, j]) => {
-        requestAnimationFrame(() => {
-          document.getElementById(`cell-${i}-${j}`).classList.add('empty');
-        });
+        document.getElementById(`cell-${i}-${j}`).classList.add('empty');
       });
     });
   });
