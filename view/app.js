@@ -1,7 +1,7 @@
 import { createDiv, omit } from './utils.js';
-import { buildNonogram, solve } from '../solve.js';
+import { buildNonogram, solve } from '../nono.js';
 
-const [ hClues, vClues ] = require('../data/webpbn/7714.json');
+const [ hClues, vClues ] = require('../data/bw/snail.json');
 
 function appendCells(field, colCount, rowCount, cellSize, getOptions = () => ({})) {
 
@@ -48,7 +48,7 @@ function appendVClues(container, clues, height) {
     const dh = height - clues[i].length;
     for (let j = 0; j < clues[i].length; j++) {
       const index = clues.length * (dh + j) + i;
-      container.childNodes[index].innerHTML = clues[i][j];
+      container.childNodes[index].innerHTML = clues[i][j].value;
     }
   }
 }
@@ -58,7 +58,7 @@ function appendHClues(container, clues, width) {
     const dw = width - clues[i].length;
     for (let j = 0; j < clues[i].length; j++) {
       const index = width * i + dw + j;
-      container.childNodes[index].innerHTML = clues[i][j];
+      container.childNodes[index].innerHTML = clues[i][j].value;
     }
   }
 }
@@ -119,6 +119,7 @@ function buildField(nonogram, cellSize) {
 
   appendCells(field, vClues.length, hClues.length, cellSize, (i, j) => ({
     classes: [['unknown', 'filled', 'empty'][nonogram.rows[i].cells[j].value]],
+    id: `cell-${i}-${j}`,
     onclick: e => {
       e.target.classList.remove('empty');
       e.target.classList.toggle('filled');
@@ -143,9 +144,25 @@ function buildField(nonogram, cellSize) {
   return container;
 }
 
+const nonogram = buildNonogram(hClues, vClues);
+const field = buildField(nonogram, 42);
+
 document.addEventListener('DOMContentLoaded', () => {
-  const nonogram = buildNonogram(hClues, vClues);
-  solve(nonogram);
-  const field = buildField(nonogram, 42);
+
   document.body.appendChild(field);
+
+  setTimeout(() => {
+    solve(nonogram, filled => {
+      filled.forEach(([i, j]) => {
+        document.getElementById(`cell-${i}-${j}`).classList.add('filled');
+      });
+    }, empty => {
+      empty.forEach(([i, j]) => {
+        requestAnimationFrame(() => {
+          document.getElementById(`cell-${i}-${j}`).classList.add('empty');
+        });
+      });
+    });
+  });
+
 });

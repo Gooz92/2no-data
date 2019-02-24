@@ -1,59 +1,11 @@
-function roundColor(colorCode) {
-  const channels = [
-    colorCode.substring(0, 2),
-    colorCode.substring(2, 4),
-    colorCode.substring(4, 6)
-  ];
+export const identity = value => value;
 
-  return channels 
-    .map(channel => (
-      Math.round(parseInt(channel, 16) / 17)
-      .toString(16)
-    )).join('');
+export function generateArray(length, generateItem = identity) {
+  const array = [];
+
+  for (let i = 0; i < length; i++) {
+    array.push(generateItem(i));
+  }
+
+  return array;
 }
-
-const stringifyBwClues = clues => (
-  clues
-    .map(sideClues => (
-      sideClues
-        .map(lineClues => lineClues.map(clue => clue.toString(32)).join(','))
-        .join(';')
-    ))
-    .join('/')
-);
-
-const stringifyColorClues = clues => (
-  clues
-    .map(sideClues => (
-      sideClues
-        .map(lineClues => (
-          lineClues.map(([ blockLength, colorIndex ]) => blockLength + ':' + colorIndex)
-        )).join(';')
-    ))
-    .join('/')
-);
-
-const parseBwClues = clues => (
-  clues.split('/')
-    .map(sideClues =>
-      sideClues.split(';')
-        .map(lineClues =>
-          lineClues.split(',')
-            .map(clue => parseInt(clue, 32))
-        )
-    )
-);
-
-const parseColorClues = clues => (
-  clues.split('/')
-    .map(sideClues =>
-      sideClues.split(';')
-        .map(lineClues =>
-          lineClues.split(',')
-            .map(clue => clue.split(':').map(n => +n))
-        )
-    )
-);
-
-
-module.exports = { stringifyBwClues, parseBwClues };
