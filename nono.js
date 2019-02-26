@@ -31,18 +31,39 @@ function calculateBounds(clues, length) {
   });
 }
 
+const tokens = [ '-', '#', 'X' ];
+
+function stringifyLine(line, markIndex) {
+  const clues = line.clues
+    .map(clue => clue.value)
+    .join(' ');
+  
+  const cells = line.cells.map((cell, index) => (
+    index === markIndex ? '*' : tokens[cell.value || 0]
+  )).join('');
+
+  return `${clues}|${cells}`;
+}
+
 function markAsFilled(line, index, filled) {
   const cell = line.cells[index];
 
-  if (cell.value === 0) {
+  if (!cell.value) {
     cell.value = 1;
     filled.push(index);
-  } else {
-    throw line;
   }
 }
 
-function solveBounds(line) {
+const converters = [
+  (lineIndex, index) => [ lineIndex, index ],
+  (lineIndex, index) => [ index, lineIndex ]
+];
+
+const absoluteIndexes = solveLine => (
+  line => solveLine(line).map(index => converters[line.side](line.index, index))
+);
+
+const solveBounds = absoluteIndexes(line => {
   const filled = [];
 
   line.clues.forEach(({ value, bounds: { max: { left, right } } }) => {
@@ -52,7 +73,7 @@ function solveBounds(line) {
   });
 
   return filled;
-}
+});
 
 function joinBlocks(line) {
   const filled = [];
@@ -161,6 +182,24 @@ function narrowBounds(line) {
   }));
 }
 
+function toPlainField(rows) {
+  const field = [];
+
+  return rows.forEach(row => {
+    row.forEach(cell => {
+      field.push(cell.value || 0);
+    });
+  });
+}
+
+function isMatch(actual, solved) {
+  return solved.every((cell, index) => [
+    () => true,
+    cell => cell === 1,
+    cell => cell === 0
+  ][cell](solved[idnex]));
+}
+
 export function buildNonogram(rawRowClues, rawColClues) {
 
   const rowClues = buildSideClues(rawRowClues);
@@ -181,7 +220,7 @@ export function buildNonogram(rawRowClues, rawColClues) {
     return {
       clues: colClues[colIndex],
       cells: [],
-      side: 0,
+      side: 1,
       index: colIndex
     };
   });
@@ -201,51 +240,21 @@ export function buildNonogram(rawRowClues, rawColClues) {
 
 export function solve(nonogram, onFill, onEmpty) {
 
-  nonogram.rows.forEach((line, index) => {
-  
-    const filled = solveBounds(line).map(i => [ index, i ]);
-
-    onFill(filled);
-  });
-
-  let i = 1000;
+  let changed, i = 0;
 
   do {
+    changed = false;
 
-    nonogram.cols.forEach((line, index) => {
+    nonogram.lines.forEach(line => {
+      const filled = solveBounds(line);
 
-      const filled = solveBounds(line).map(i => [ i, index ]);
-
-      onFill(filled);
-
-      const joined = joinBlocks(line).map(i => [ i, index ]);
-
-      onFill(joined);
-
-      const empty = findEmptySpaces(line).map(i => [ i, index ]);
-
-      onEmpty(empty);
-
-      narrowBounds(line);
-
+      if (filled.length > 0) {
+        onFill(filled);
+        changed = true;
+      }
     });
+    ++i;
+  } while (changed);
 
-    nonogram.rows.forEach((line, index) => {
-
-      const filled = solveBounds(line).map(i => [ index, i ]);
-
-      onFill(filled);
-
-      const joined = joinBlocks(line).map(i => [ index, i ]);
-
-      onFill(joined);
-
-      const empty = findEmptySpaces(line);
-
-      onEmpty(empty.map(i => [ index, i ]));
-
-      narrowBounds(line);
-    });
-  } while (i-- > 0);
-
+  console.log(i);
 }

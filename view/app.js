@@ -1,5 +1,5 @@
 import { createDiv, omit } from './utils.js';
-import { buildNonogram, solve } from '../nono.js';
+const { buildNonogram, solve } = require('../nono.js');
 
 const [ hClues, vClues ] = require('../data/bw/snail.json');
 
