@@ -150,7 +150,6 @@ const field = buildField(nonogram, 42);
 document.addEventListener('DOMContentLoaded', () => {
 
   document.body.appendChild(field);
-
   setTimeout(() => {
     solve(nonogram, filled => {
       filled.forEach(([i, j]) => {
