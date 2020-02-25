@@ -6,31 +6,6 @@ const buildSideClues = sideClues => (
   ))
 );
 
-function calculateBounds(clues, length) {
-  const maxLefts = [ 0 ];
-  const maxRights = [ length - 1 ];
-
-  let left = 0, right = length - 1;
-
-  for (let i = 0; i < clues.length - 1; i++) {
-    maxLefts.push(left += clues[i].value + 1);
-    maxRights.unshift(right -= clues[clues.length - i - 1].value + 1);
-  }
-
-  clues.forEach((clue, index) => {
-    clue.bounds = {
-      max: {
-        left: maxLefts[index],
-        right: maxRights[index]
-      },
-      min: {
-        left: index > 0 ? maxRights[index - 1] + 1 : 0,
-        right: index < clues.length - 1 ? maxLefts[index + 1] - 1 : length - 1
-      }
-    }
-  });
-}
-
 const tokens = [ '-', '#', 'X' ];
 
 function stringifyLine(line, markIndex) {
@@ -206,7 +181,6 @@ export function buildNonogram(rawRowClues, rawColClues) {
   const colClues = buildSideClues(rawColClues);
 
   const rows = generateArray(rowClues.length, rowIndex => {
-    calculateBounds(rowClues[rowIndex], colClues.length);
     return {
       clues: rowClues[rowIndex],
       cells: generateArray(colClues.length, () => ({})),
@@ -216,7 +190,6 @@ export function buildNonogram(rawRowClues, rawColClues) {
   });
   
   const cols = generateArray(colClues.length, colIndex => {
-    calculateBounds(colClues[colIndex], rowClues.length);
     return {
       clues: colClues[colIndex],
       cells: [],
@@ -246,7 +219,7 @@ export function solve(nonogram, onFill, onEmpty) {
     changed = false;
 
     nonogram.lines.forEach(line => {
-      const filled = solveBounds(line);
+      const filled = solveBounds(line); 
 
       if (filled.length > 0) {
         onFill(filled);
