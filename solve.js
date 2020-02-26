@@ -102,6 +102,28 @@ const solveUtils = {
     return emptyCells;
   },
 
+  generateLineClues: (() => {
+    // const cash = [];
+    
+    return length => {
+      // if (length <= cash.length) {
+      //   return cash[length - 1];
+      // }
+      const clues = [ [ length ] ];
+  
+      for (let i = 1; i < length - 1; i++) {
+        const c = length - i - 1;
+        const subClues = solveUtils.generateLineClues(c);
+        subClues.forEach(sc => {
+          clues.push([i, ...sc]);
+        });
+      }
+      
+      // cash.push(clues);
+      return clues;
+    }
+  })(),
+
   build(rowSideClues, colSideClues) {
     const rows = rowSideClues.map((rowClues, index) => {
       const bounds = solveUtils.calculateBounds(rowClues, colSideClues.length);
