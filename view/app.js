@@ -1,7 +1,7 @@
 import { createDiv, omit } from './utils.js';
 const { buildNonogram, solve } = require('../nono.js');
 
-const [ hClues, vClues ] = require('../data/bw/snail.json');
+const [ hClues, vClues ] = require('../data/webpbn/155.json');
 
 function appendCells(field, colCount, rowCount, cellSize, getOptions = () => ({})) {
 
@@ -157,9 +157,10 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }, empty => {
       empty.forEach(([i, j]) => {
+        debugger;
         document.getElementById(`cell-${i}-${j}`).classList.add('empty');
       });
     });
-  });
+  }, 500);
 
 });

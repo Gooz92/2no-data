@@ -33,6 +33,10 @@ const solveUtils = {
     return bounds;
   },
 
+  narrowBounds(clue, [ left, right ], line) {
+
+  },
+
   simpleBlock(clue, [ left, right ] ) {
     const filledCellIndexes = [];
   
@@ -64,7 +68,7 @@ const solveUtils = {
   getFilledBlocks([ left, right ], line) {
     const blocks = [];
     let inBlock = false;
-    let start = 0, end = 0;
+    let start = 0;
 
     for (let i = left; i <= right; i++) {
 
@@ -85,6 +89,7 @@ const solveUtils = {
     return blocks;
   },
 
+  // check clue index ?
   findEmptyCells(clue, filledBlock, [ left, rigth ]) {
     const blockLength = filledBlock[1] - filledBlock[0] + 1;
     const delta = clue - blockLength;

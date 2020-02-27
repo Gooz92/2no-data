@@ -1,10 +1,15 @@
-const config = require('./test.js');
-const methods = require('./solve.js');
+const config = require('./tests.js');
+
+const methods = {
+  ...require('./solve.js'),
+  ...require('./validate.js')
+};
 
 Object.keys(config)
   .forEach(methodName => {
     const method = methods[methodName];
     const cases = config[methodName];
+    console.log(methodName);
     testMethod(method, cases);
   });
 
