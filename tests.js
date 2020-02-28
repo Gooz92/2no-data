@@ -1,4 +1,4 @@
 module.exports = {
-  ...require('./solve.test.js'),
+  ...require('./solve.utils.test.js'),
   ...require('./validate.test.js')
 };

@@ -1,7 +1,7 @@
 import { createDiv, omit } from './utils.js';
 const { buildNonogram, solve } = require('../nono.js');
 
-const [ hClues, vClues ] = require('../data/webpbn/155.json');
+const [ hClues, vClues ] = require('../data/bw/5x5/clock.json');
 
 function appendCells(field, colCount, rowCount, cellSize, getOptions = () => ({})) {
 
@@ -147,6 +147,8 @@ function buildField(nonogram, cellSize) {
 const nonogram = buildNonogram(hClues, vClues);
 const field = buildField(nonogram, 42);
 
+window.__export2no__ = exportField;
+
 document.addEventListener('DOMContentLoaded', () => {
 
   document.body.appendChild(field);
@@ -157,10 +159,23 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }, empty => {
       empty.forEach(([i, j]) => {
-        debugger;
         document.getElementById(`cell-${i}-${j}`).classList.add('empty');
       });
     });
   }, 500);
 
 });
+
+function exportField() {
+  const field = [];
+
+  for (let i = 0; i < hClues.length; i++) {
+    for (let j = 0; j < vClues.length; j++) {
+      field.push(
+        document.getElementById(`cell-${i}-${j}`).classList.contains('filled') ? 1 : 0
+      );
+    }
+  }
+
+  return field;
+}

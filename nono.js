@@ -1,6 +1,6 @@
 import { generateArray } from './utils.js';
 
-const { simpleBlock, calculateBounds, getFilledBlocks, findEmptyCells } = require('./solve.js');
+const { simpleBlock, calculateBounds, getFilledBlocks, findEmptyCells } = require('./solve.utils.js');
 
 const buildSideClues = sideClues => (
   sideClues.map(lineClues => (
@@ -59,7 +59,8 @@ const solveEmptyCells = absoluteIndexes(line => {
     const bounds = line.bounds[index];
     const filledBlocks = getFilledBlocks(bounds, line.cells.map(cell => cell.value));
     if (filledBlocks.length === 1) {
-      findEmptyCells(value, filledBlocks[0], bounds).forEach(index => {
+      const mask = cluesIndexesMask(line.bounds);
+      findEmptyCells(value, index, filledBlocks[0], bounds, mask).forEach(index => {
         markAsEmpty(line, index, empty);
       });
     }
@@ -123,12 +124,12 @@ export function solve(nonogram, onFill, onEmpty) {
         changed = true;
       }
 
-      const emptyCells = solveEmptyCells(line);
+      // const emptyCells = solveEmptyCells(line);
 
-      if (emptyCells.length > 0) {
-        onEmpty(emptyCells);
-        changed = true;
-      }
+      // if (emptyCells.length > 0) {
+      //   onEmpty(emptyCells);
+      //   changed = true;
+      // }
   
     });
     ++i;

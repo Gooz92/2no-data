@@ -1,7 +1,7 @@
 const config = require('./tests.js');
 
 const methods = {
-  ...require('./solve.js'),
+  ...require('./solve.utils.js'),
   ...require('./validate.js')
 };
 
