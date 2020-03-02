@@ -162,14 +162,14 @@ const solveUtils = {
       }
     }
 
-    return { lines: [ ...rows, ...cols ] };
+    return { rows, cols, lines: [ ...rows, ...cols ] };
   },
 
   toFlatArray(rows) {
     const field = [];
 
     rows.forEach(row => {
-      line.cells.forEach(cell => {
+      row.cells.forEach(cell => {
         field.push(cell.value);
       });
     });
