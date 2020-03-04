@@ -5,6 +5,6 @@ module.exports = {
   mode: 'development',
   output: {
     path: path.resolve(__dirname, 'view'),
-    filename: 'bundle.js'
+    filename: '../dist/bundle.js'
   }
 };
