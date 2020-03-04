@@ -1,5 +1,5 @@
 import { createDiv, omit } from './utils.js';
-const { buildNonogram, solve } = require('../nono.js');
+const solveUtils = require('../solve.utils.js');
 
 const [ hClues, vClues ] = require('../data/bw/5x5/clock.json');
 
@@ -48,7 +48,7 @@ function appendVClues(container, clues, height) {
     const dh = height - clues[i].length;
     for (let j = 0; j < clues[i].length; j++) {
       const index = clues.length * (dh + j) + i;
-      container.childNodes[index].innerHTML = clues[i][j].value;
+      container.childNodes[index].innerHTML = clues[i][j];
     }
   }
 }
@@ -58,15 +58,12 @@ function appendHClues(container, clues, width) {
     const dw = width - clues[i].length;
     for (let j = 0; j < clues[i].length; j++) {
       const index = width * i + dw + j;
-      container.childNodes[index].innerHTML = clues[i][j].value;
+      container.childNodes[index].innerHTML = clues[i][j];
     }
   }
 }
 
-function buildField(nonogram, cellSize) {
-
-  const vClues = nonogram.colClues;
-  const hClues = nonogram.rowClues;
+function buildField(hClues, vClues, cellSize) {
 
   const vCluesHeight = findLongestClueLength(vClues) * cellSize;
   const hCluesWidth = findLongestClueLength(hClues) * cellSize;
@@ -118,7 +115,6 @@ function buildField(nonogram, cellSize) {
   });
 
   appendCells(field, vClues.length, hClues.length, cellSize, (i, j) => ({
-    classes: [['unknown', 'filled', 'empty'][nonogram.rows[i].cells[j].value]],
     id: `cell-${i}-${j}`,
     onclick: e => {
       e.target.classList.remove('empty');
@@ -144,26 +140,12 @@ function buildField(nonogram, cellSize) {
   return container;
 }
 
-const nonogram = buildNonogram(hClues, vClues);
-const field = buildField(nonogram, 42);
+const field = buildField(hClues, vClues, 42);
 
 window.__export2no__ = exportField;
 
 document.addEventListener('DOMContentLoaded', () => {
-
   document.body.appendChild(field);
-  setTimeout(() => {
-    solve(nonogram, filled => {
-      filled.forEach(([i, j]) => {
-        document.getElementById(`cell-${i}-${j}`).classList.add('filled');
-      });
-    }, empty => {
-      empty.forEach(([i, j]) => {
-        document.getElementById(`cell-${i}-${j}`).classList.add('empty');
-      });
-    });
-  }, 500);
-
 });
 
 function exportField() {

@@ -102,6 +102,17 @@ module.exports = {
     }
   ],
 
+  getAbsoluteIndexes: [
+    {
+      args: [ 1, 0, [ 1, 2 ] ],
+      result: [ [ 1, 1 ], [ 1, 2 ] ]
+    },
+    {
+      args: [ 2, 1, [ 2, 4 ] ],
+      result: [ [ 2, 2 ], [ 4, 2 ] ]
+    }
+  ],
+
   findEmptyCells: [
     /*
      *     0 1 2 3

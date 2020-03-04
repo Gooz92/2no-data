@@ -12,6 +12,11 @@ function generateArray(length, generateItem = identity) {
   return array;
 }
 
+const converters = [
+  (lineIndex, index) => [ lineIndex, index ],
+  (lineIndex, index) => [ index, lineIndex ]
+];
+
 const solveUtils = {
   calculateBounds(clues, length) {
     const lefts = [ 0 ];
@@ -31,10 +36,6 @@ const solveUtils = {
     }
   
     return bounds;
-  },
-
-  narrowBounds(clue, [ left, right ], line) {
-
   },
 
   simpleBlock(clue, [ left, right ] ) {
@@ -163,6 +164,10 @@ const solveUtils = {
     }
 
     return { rows, cols, lines: [ ...rows, ...cols ] };
+  },
+
+  getAbsoluteIndexes(lineIndex, side, indexes) {
+    return indexes.map(index => converters[side](lineIndex, index));
   },
 
   toFlatArray(rows) {
