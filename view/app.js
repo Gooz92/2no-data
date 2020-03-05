@@ -1,5 +1,5 @@
 import { createDiv, omit } from './utils.js';
-const solveUtils = require('../solve.utils.js');
+const solve = require('../solve.js');
 
 const [ hClues, vClues ] = require('../data/bw/5x5/clock.json');
 
@@ -146,7 +146,24 @@ window.__export2no__ = exportField;
 
 document.addEventListener('DOMContentLoaded', () => {
   document.body.appendChild(field);
+
+  const solution = solve(hClues, vClues);
+  drawField(solution, hClues.length, vClues.length);
 });
+
+function drawField(flatField, rowCount, colCount) {
+  for (let i = 0; i < rowCount; i++) {
+    for (let j = 0; j < colCount; j++) {
+      const index = i * colCount + j;
+      const cellSate = flatField[index];
+
+        if(cellSate > 0) {
+        const className = [ 'filled', 'empty' ][cellSate - 1];
+        document.getElementById(`cell-${i}-${j}`).classList.add(className);
+      }
+    }
+  }
+}
 
 function exportField() {
   const field = [];
