@@ -1,7 +1,7 @@
 import { createDiv, omit } from './utils.js';
 const solve = require('../solve.js');
 
-const [ hClues, vClues ] = require('../data/bw/5x5/clock.json');
+const [ hClues, vClues ] = require('../data/bw/10x10/155.json');
 
 function appendCells(field, colCount, rowCount, cellSize, getOptions = () => ({})) {
 
@@ -143,6 +143,7 @@ function buildField(hClues, vClues, cellSize) {
 const field = buildField(hClues, vClues, 42);
 
 window.__export2no__ = exportField;
+window.__draw__ = drawField;
 
 document.addEventListener('DOMContentLoaded', () => {
   document.body.appendChild(field);

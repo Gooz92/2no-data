@@ -17,6 +17,34 @@ function solveBounds(line) {
   return solveUtils.getAbsoluteIndexes(line.index, line.side, filled);
 }
 
+function wrapSolvedBlocks(line) {
+  const empty = [];
+
+  const mask = solveUtils.cluesIndexesMask(line.bounds);
+
+  line.clues.forEach((clue, index) => {
+    const bounds = line.bounds[index];
+
+    const blocks = solveUtils.getFilledBlocks(bounds, line.cells.map(c => c.value));
+
+    if (blocks.length !== 1) {
+      return;
+    }
+
+    const block = blocks[0];
+
+    const indexes = solveUtils.findEmptyCells(line.clues, block, mask);
+
+    indexes.forEach(i => {
+      if (line.cells[i].value !== 2) {
+        empty.push(i);
+      }
+    });
+  });
+
+  return solveUtils.getAbsoluteIndexes(line.index, line.side, empty);
+}
+
 function solve(nonogram) {
 
   let changed;
@@ -31,6 +59,14 @@ function solve(nonogram) {
         changed = true;
         filled.forEach(([ i, j ]) => {
           nonogram.rows[i].cells[j].value = 1;
+        });
+      }
+
+      const empty = wrapSolvedBlocks(line);
+      if (empty.length > 0) {
+        changed = true;
+        empty.forEach(([ i, j ]) => {
+          nonogram.rows[i].cells[j].value = 2;
         });
       }
     });

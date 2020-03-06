@@ -92,10 +92,31 @@ const solveUtils = {
 
   // check clue index ?
   findEmptyCells(clues, filledBlock, mask) {
+    const [ startBlock, endBlock ] = filledBlock;
 
-    
-    
-  
+    let f = false, blockClue;
+
+    for (let i = startBlock; i <= endBlock; i++) {
+      const cellClueIndexes = mask[i];
+      if (cellClueIndexes.length === 1) {
+        f = true;
+        blockClue = clues[cellClueIndexes[0]];
+        break;
+      }
+    }
+
+    if (f && endBlock - startBlock + 1 === blockClue) {
+      const emptyCells = [];
+      if (startBlock > 0) {
+        emptyCells.push(startBlock - 1);
+      }
+      if (endBlock < mask.length - 1) {
+        emptyCells.push(endBlock + 1);
+      }
+      return emptyCells;
+    }
+
+    return [];
   },
 
   generateLineClues(length) {

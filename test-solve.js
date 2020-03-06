@@ -14,8 +14,8 @@ function getPercentage(solution) {
   return `${(solvedCells / solution.length * 100).toFixed(2)}%`;
 }
 
-forEachFile('./data/bw/5x5/', file => {
+forEachFile('./data/bw/', file => {
   const [ hClues, vClues, field ] = require(file);
   const solution = solve(hClues, vClues);
-  console.log(getPercentage(solution), isValid(solution, field));
+  console.log(file, getPercentage(solution), isValid(solution, field));
 });
