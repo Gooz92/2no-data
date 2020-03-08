@@ -90,33 +90,44 @@ const solveUtils = {
     return blocks;
   },
 
-  // check clue index ?
   findEmptyCells(clues, filledBlock, mask) {
     const [ startBlock, endBlock ] = filledBlock;
 
-    let f = false, blockClue;
+    let f = false, blockClue, blockClueIndex;
 
     for (let i = startBlock; i <= endBlock; i++) {
       const cellClueIndexes = mask[i];
       if (cellClueIndexes.length === 1) {
         f = true;
+        blockClueIndex = cellClueIndexes[0];
         blockClue = clues[cellClueIndexes[0]];
         break;
       }
     }
 
+    const emptyCells = [];
+
     if (f && endBlock - startBlock + 1 === blockClue) {
-      const emptyCells = [];
-      if (startBlock > 0) {
-        emptyCells.push(startBlock - 1);
+      mask.forEach((clueIndexes, cellIndex) => {
+        if (clueIndexes.length === 1 && clueIndexes[0] === blockClueIndex && (cellIndex < startBlock || cellIndex > endBlock)) {
+          emptyCells.push(cellIndex);
+        }
+      });
+
+      const leftEmpty = startBlock - 1;
+      if (startBlock > 0 && !emptyCells.includes(leftEmpty)) {
+        emptyCells.unshift(leftEmpty);
       }
-      if (endBlock < mask.length - 1) {
-        emptyCells.push(endBlock + 1);
+
+      const rightEmpty = endBlock + 1;
+      if (rightEmpty < mask.length && !emptyCells.includes(rightEmpty)) {
+        emptyCells.push(rightEmpty);
       }
+
       return emptyCells;
     }
 
-    return [];
+    return emptyCells;
   },
 
   generateLineClues(length) {

@@ -36,6 +36,7 @@ function wrapSolvedBlocks(line) {
     const indexes = solveUtils.findEmptyCells(line.clues, block, mask);
 
     indexes.forEach(i => {
+      if (!line.cells[i]) debugger;
       if (line.cells[i].value !== 2) {
         empty.push(i);
       }
