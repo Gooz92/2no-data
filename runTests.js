@@ -2,7 +2,8 @@ const config = require('./tests.js');
 
 const methods = {
   ...require('./solve.utils.js'),
-  ...require('./validate.js')
+  ...require('./validate.js'),
+  ...require('./result.utils.js')
 };
 
 Object.keys(config)

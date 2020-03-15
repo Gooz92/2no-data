@@ -7,7 +7,7 @@ const fileUtils = module.exports = {
         if (fs.statSync(folderPath + '/' + file).isDirectory()) {
           fileUtils.forEachFile(folderPath + '/' + file, callback);
         } else {
-          callback(folderPath + '/' + file);
+          callback(folderPath + '/' + file, file);
         }
       });
   }
