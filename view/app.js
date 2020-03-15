@@ -1,7 +1,7 @@
 import { createDiv, omit } from './utils.js';
 const solve = require('../solve.js');
 
-const [ hClues, vClues ] = require('../data/bw/duck-10x6.json');
+const [ hClues, vClues ] = require('../data/bw/10x10/boat.json');
 
 function appendCells(field, colCount, rowCount, cellSize, getOptions = () => ({})) {
 
