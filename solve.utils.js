@@ -93,14 +93,16 @@ const solveUtils = {
   findEmptyCells(clues, filledBlock, mask) {
     const [ startBlock, endBlock ] = filledBlock;
 
-    let f = false, blockClue, blockClueIndex;
+    let f = false, f1 = false, blockClue, blockClueIndex;
 
     for (let i = startBlock; i <= endBlock; i++) {
       const cellClueIndexes = mask[i];
-      if (cellClueIndexes.length === 1) {
+      const cellClues = cellClueIndexes.map(index => clues[index]);
+      if (cellClues.length === 1 || cellClues.every(clue => clue === cellClues[0])) {
         f = true;
+        f1 = cellClues.length === 1;
+        blockClue = cellClues[0];
         blockClueIndex = cellClueIndexes[0];
-        blockClue = clues[cellClueIndexes[0]];
         break;
       }
     }
@@ -109,7 +111,7 @@ const solveUtils = {
 
     if (f && endBlock - startBlock + 1 === blockClue) {
       mask.forEach((clueIndexes, cellIndex) => {
-        if (clueIndexes.length === 1 && clueIndexes[0] === blockClueIndex && (cellIndex < startBlock || cellIndex > endBlock)) {
+        if (f1 && clueIndexes.length === 1 && clueIndexes[0] === blockClueIndex && (cellIndex < startBlock || cellIndex > endBlock)) {
           emptyCells.push(cellIndex);
         }
       });
