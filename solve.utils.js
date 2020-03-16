@@ -132,6 +132,27 @@ const solveUtils = {
     return emptyCells;
   },
 
+  glue(clue, bounds, filledBlock) {
+    const [ minBound, maxBound ] = bounds;
+    const [ startBlock, endBlock ] = filledBlock;
+
+    const blockLength = endBlock - startBlock + 1;
+
+    const delta = clue -  blockLength;
+
+    const leftPadding = startBlock - minBound;
+
+    const appendToRight = delta - leftPadding;
+
+    const filled = [];
+
+    for (let i = endBlock + 1; i <= endBlock + appendToRight; i++) {
+      filled.push(i);
+    }
+
+    return filled;
+  },
+
   generateLineClues(length) {
     const allClues = [ [ length ] ];
   

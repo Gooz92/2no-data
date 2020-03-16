@@ -1,4 +1,3 @@
-
 const solveUtils = require('./solve.utils.js');
 
 function solveBounds(line) {

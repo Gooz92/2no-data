@@ -188,6 +188,21 @@ module.exports = {
       }
   ],
 
+
+  glue: [
+    /**
+     * 
+     *     0 1 2 3 4 5
+     * 4 | . # # . . . |
+     *   | . # # # . . |
+     * 
+     */
+    {
+      args: [ 4, [ 0, 5 ], [ 1, 2 ] ],
+      result: [ 3 ]
+    }
+  ],
+
   generateLineClues: [
     {
       args: [ 1 ],
