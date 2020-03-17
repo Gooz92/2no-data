@@ -148,6 +148,26 @@ const solveUtils = {
       return emptyCells;
     }
 
+    if (blockClue.length === 2) {
+      const [ clueValue, clueIndex ] = blockClue;
+      const blockLength = endBlock - startBlock + 1;
+      const delta = clueValue - blockLength;
+
+      for (let i = 0; i < startBlock - delta; i++) {
+        const cellClues = cluesDistribution[i];
+        if (cellClues.length === 1 && cellClues[0][1] === clueIndex) {
+          emptyCells.push(i);
+        }
+      }
+
+      for (let i = endBlock + delta + 1; i < cluesDistribution.length; i++) {
+        const cellClues = cluesDistribution[i];
+        if (cellClues.length === 1 && cellClues[0][1] === clueIndex) {
+          emptyCells.push(i);
+        }
+      }
+    }
+
     return emptyCells;
   },
 
