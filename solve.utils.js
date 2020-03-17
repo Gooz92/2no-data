@@ -38,6 +38,27 @@ const solveUtils = {
     return bounds;
   },
 
+  narrowBounds(filledBlock, bounds, cells) {
+    const [ blockStart, blockEnd ] = filledBlock;
+    const [ start, end ] = bounds;
+
+    let [ newStart, newEnd ] = bounds;
+
+    for (let i = start; i < blockStart; i++) {
+      if (cells[i] === 2) {
+        newStart = i;
+      }
+    }
+    
+    for (let i = blockEnd; i <= end; i++) {
+      if (cells[i] === 2) {
+        newEnd = i;
+      }
+    }
+
+    return [ newStart, newEnd ];
+  },
+
   simpleBlock(clue, [ left, right ] ) {
     const filledCellIndexes = [];
   

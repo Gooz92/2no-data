@@ -1,10 +1,5 @@
 # TODO
 
-* Refactor validation
-
-#Terms
-
-##Max bound
-  Bounds which *might* contain clues cells
-
-
+* Store clues distribution
+* Unit test definition becomes to complex. Resolve somehow...
+* Narrow bounds (recalc clues distribution)
