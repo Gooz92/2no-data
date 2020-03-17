@@ -19,7 +19,7 @@ function solveBounds(line) {
 function wrapSolvedBlocks(line) {
   const empty = [];
 
-  const mask = solveUtils.cluesIndexesMask(line.bounds);
+  const cluesDistribution = solveUtils.buildCluesDistribution(line.clues, line.bounds);
 
   line.clues.forEach((clue, index) => {
     const bounds = line.bounds[index];
@@ -32,7 +32,7 @@ function wrapSolvedBlocks(line) {
 
     const block = blocks[0];
 
-    const indexes = solveUtils.findEmptyCells(line.clues, block, mask);
+    const indexes = solveUtils.findEmptyCells(block, cluesDistribution);
 
     indexes.forEach(i => {
       if (line.cells[i].value !== 2) {

@@ -48,22 +48,22 @@ const solveUtils = {
     return filledCellIndexes;
   },
 
-  cluesIndexesMask(bounds) {
+  buildCluesDistribution(clues, bounds) {
     const length = bounds[bounds.length - 1][1] + 1;
-    const line = [];
+    const distribution = [];
 
     for (let i = 0; i < length; i++) {
       const cellClues = [];
       for (let j = 0; j < bounds.length; j++) {
         const [ left, right ] = bounds[j];
         if (i >= left && i <= right) {
-          cellClues.push(j);
+          cellClues.push([ clues[j], j ]);
         }
       }
-      line.push(cellClues);
+      distribution.push(cellClues);
     }
 
-    return line;
+    return distribution;
   },
 
   getFilledBlocks([ left, right ], line) {
@@ -90,39 +90,58 @@ const solveUtils = {
     return blocks;
   },
 
-  findEmptyCells(clues, filledBlock, mask) {
+  detectBlockClue(filledBlock, cluesDistribution) {
     const [ startBlock, endBlock ] = filledBlock;
 
-    let f = false, f1 = false, blockClue, blockClueIndex;
+    let blockClueValue = null;
 
     for (let i = startBlock; i <= endBlock; i++) {
-      const cellClueIndexes = mask[i];
-      const cellClues = cellClueIndexes.map(index => clues[index]);
-      if (cellClues.length === 1 || cellClues.every(clue => clue === cellClues[0])) {
-        f = true;
-        f1 = cellClues.length === 1;
-        blockClue = cellClues[0];
-        blockClueIndex = cellClueIndexes[0];
-        break;
+      const cellClues = cluesDistribution[i];
+      const blockClue = cellClues[0];
+      blockClueValue = blockClue[0];
+
+      if (cellClues.length === 1) {
+        return blockClue;
+      }
+
+      for (let j = 1; j < cellClues.length; j++) {
+        if (blockClueValue !== cellClues[j][0]) {
+          break;
+        }
       }
     }
 
+    return blockClueValue === null ? null : [ blockClueValue ];
+  },
+
+  findEmptyCells(filledBlock, cluesDistribution) {
+    const blockClue = solveUtils.detectBlockClue(filledBlock, cluesDistribution);
+
     const emptyCells = [];
 
-    if (f && endBlock - startBlock + 1 === blockClue) {
-      mask.forEach((clueIndexes, cellIndex) => {
-        if (f1 && clueIndexes.length === 1 && clueIndexes[0] === blockClueIndex && (cellIndex < startBlock || cellIndex > endBlock)) {
-          emptyCells.push(cellIndex);
-        }
-      });
+    if (blockClue === null) {
+      return emptyCells;
+    }
 
+    const [ startBlock, endBlock ] = filledBlock;
+
+    if (endBlock - startBlock + 1 === blockClue[0]) {
+      if (blockClue.length === 2) {
+        const blockClueIndex = blockClue[1];
+        cluesDistribution.forEach((cellClues, cellIndex) => {
+          if (cellClues.length === 1 && cellClues[0][1] === blockClueIndex && (cellIndex < startBlock || cellIndex > endBlock)) {
+            emptyCells.push(cellIndex);
+          }
+        });
+      }
+  
       const leftEmpty = startBlock - 1;
       if (startBlock > 0 && !emptyCells.includes(leftEmpty)) {
         emptyCells.unshift(leftEmpty);
       }
 
       const rightEmpty = endBlock + 1;
-      if (rightEmpty < mask.length && !emptyCells.includes(rightEmpty)) {
+      if (rightEmpty < cluesDistribution.length && !emptyCells.includes(rightEmpty)) {
         emptyCells.push(rightEmpty);
       }
 
@@ -130,27 +149,6 @@ const solveUtils = {
     }
 
     return emptyCells;
-  },
-
-  glue(clue, bounds, filledBlock) {
-    const [ minBound, maxBound ] = bounds;
-    const [ startBlock, endBlock ] = filledBlock;
-
-    const blockLength = endBlock - startBlock + 1;
-
-    const delta = clue -  blockLength;
-
-    const leftPadding = startBlock - minBound;
-
-    const appendToRight = delta - leftPadding;
-
-    const filled = [];
-
-    for (let i = endBlock + 1; i <= endBlock + appendToRight; i++) {
-      filled.push(i);
-    }
-
-    return filled;
   },
 
   generateLineClues(length) {
