@@ -6,12 +6,13 @@ function solveBounds(line) {
 
   line.clues.forEach((clue, index) => {
     const bounds = line.bounds[index];
-    const indexes = solveUtils.simpleBlock(clue, bounds);
-    indexes.forEach(i => {
+    const [ start, end ] = solveUtils.simpleBlock(clue, bounds);
+
+    for (let i = start; i <= end; i++) {
       if (line.cells[i].value !== 1) {
         filled.push(i);
       }
-    });
+    }
   });
 
   return solveUtils.getAbsoluteIndexes(line.index, line.side, filled);

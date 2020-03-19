@@ -1,16 +1,5 @@
-const solveUtils = require('./solve.utils.js');
-
-const identity = value => value;
-
-function generateArray(length, generateItem = identity) {
-  const array = [];
-
-  for (let i = 0; i < length; i++) {
-    array.push(generateItem(i));
-  }
-
-  return array;
-}
+const solveUtils = require('./solve.utils.js'),
+  generateArray = require('./generate-array.js');
 
 module.exports = function (horizontalClues, verticalClues) {
   const rows = horizontalClues.map((clues, index) => {

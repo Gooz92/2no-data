@@ -48,13 +48,43 @@ const solveUtils = {
   },
 
   simpleBlock(clue, [ left, right ] ) {
-    const filledCellIndexes = [];
-  
-    for (let i = right - clue + 1; i < left + clue; i++) {
-      filledCellIndexes.push(i);
+    const start = right - clue + 1,
+      end = left + clue - 1;
+    
+    if (start <= end) {
+      return [ start, end ];
     }
 
-    return filledCellIndexes;
+    return [];
+  },
+
+  glue(clue, filledBlock, bounds) {
+
+    const filled = [];
+
+    const [ start, end ] = bounds;
+    const [ startBlock, endBlock ] = filledBlock;
+    const delta = clue - endBlock + startBlock - 1;
+
+    const leftPadding = startBlock - start;
+    const addToRight = delta - leftPadding;
+
+    for (let i = endBlock + 1; i <= endBlock + addToRight && i < end; i++) {
+      filled.push(i);
+    }
+
+    const rightPadding = end - endBlock;
+    const addToLeft = delta - rightPadding;
+
+    const s = startBlock - addToLeft;
+
+    if (s < 0) return filled;
+
+    for (let i = s; i < startBlock; i++) {
+      filled.push(i);
+    }
+
+    return filled;
   },
 
   buildCluesDistribution(clues, bounds) {

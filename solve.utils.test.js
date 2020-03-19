@@ -57,9 +57,29 @@ module.exports = {
   simpleBlock: [
     {
       args: [ 2, [ 0, 2 ] ],
-      result: [ 1 ]
+      result: [ 1, 1 ]
     }
   ],
+
+  // buildOppositeSideBlocks: [
+  //   {
+  //     args: [
+  //       [
+  //         [ [ 1, 1 ] ],
+  //         [ [ 0, 1 ] ],
+  //         [ [ 1, 1 ] ],
+  //         [ [ 1, 1 ] ],
+  //         [ [ 0, 2 ] ]
+  //       ]
+  //     ],
+
+  //     result: [
+  //       [ [ 1, 1 ], [ 4, 4 ] ],
+  //       [ [ 0, 5 ] ],
+  //       [ [ 5, 5 ] ]        
+  //     ]
+  //   }
+  // ],
 
   buildCluesDistribution: [
 
