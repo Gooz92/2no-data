@@ -1,0 +1,51 @@
+const solveUtils = require('./solve.utils.js');
+
+const identity = value => value;
+
+function generateArray(length, generateItem = identity) {
+  const array = [];
+
+  for (let i = 0; i < length; i++) {
+    array.push(generateItem(i));
+  }
+
+  return array;
+}
+
+module.exports = function (horizontalClues, verticalClues) {
+  const rows = horizontalClues.map((clues, index) => {
+    const bounds = solveUtils.calculateBounds(clues, verticalClues.length),
+      cluesDistribution = solveUtils.buildCluesDistribution(clues, bounds);
+
+    return {
+      cells: generateArray(verticalClues.length, () => ({ value: 0 })),
+      clues,
+      side: 0,
+      bounds,
+      cluesDistribution,
+      index
+    };
+  });
+
+  const cols = verticalClues.map((clues, index) => {
+    const bounds = solveUtils.calculateBounds(clues, horizontalClues.length),
+      cluesDistribution = solveUtils.buildCluesDistribution(clues, bounds);
+
+    return {
+      cells: [],
+      clues,
+      side: 1,
+      bounds,
+      cluesDistribution,
+      index
+    }
+  });
+
+  for (let i = 0; i < horizontalClues.length; i++) {
+    for (let j = 0; j < verticalClues.length; j++) {
+      cols[j].cells[i] = rows[i].cells[j];
+    }
+  }
+
+  return { rows, cols, lines: [ ...rows, ...cols ] };
+}

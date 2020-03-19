@@ -1,17 +1,5 @@
 const FILLED = 1;
 
-const identity = value => value;
-
-function generateArray(length, generateItem = identity) {
-  const array = [];
-
-  for (let i = 0; i < length; i++) {
-    array.push(generateItem(i));
-  }
-
-  return array;
-}
-
 const converters = [
   (lineIndex, index) => [ lineIndex, index ],
   (lineIndex, index) => [ index, lineIndex ]
@@ -46,13 +34,13 @@ const solveUtils = {
 
     for (let i = start; i < blockStart; i++) {
       if (cells[i] === 2) {
-        newStart = i;
+        newStart = i + 1;
       }
     }
     
     for (let i = blockEnd; i <= end; i++) {
       if (cells[i] === 2) {
-        newEnd = i;
+        newEnd = i - 1;
       }
     }
 
@@ -211,38 +199,6 @@ const solveUtils = {
     } while (i < allClues.length);
 
     return allClues;
-  },
-
-  build(horizontalClues, verticalClues) {
-    const rows = horizontalClues.map((clues, index) => {
-      const bounds = solveUtils.calculateBounds(clues, verticalClues.length);
-      return {
-        cells: generateArray(verticalClues.length, () => ({ value: 0 })),
-        clues,
-        side: 0,
-        bounds,
-        index
-      };
-    });
-
-    const cols = verticalClues.map((clues, index) => {
-      const bounds = solveUtils.calculateBounds(clues, horizontalClues.length);
-      return {
-        cells: [],
-        clues,
-        side: 1,
-        bounds,
-        index
-      }
-    });
-
-    for (let i = 0; i < horizontalClues.length; i++) {
-      for (let j = 0; j < verticalClues.length; j++) {
-        cols[j].cells[i] = rows[i].cells[j];
-      }
-    }
-
-    return { rows, cols, lines: [ ...rows, ...cols ] };
   },
 
   getAbsoluteIndexes(lineIndex, side, indexes) {

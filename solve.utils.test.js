@@ -1,3 +1,5 @@
+const solveUtils = require('./solve.utils.js');
+
 module.exports = {
   calculateBounds: [
     {
@@ -143,9 +145,21 @@ module.exports = {
       */
 
      {
-       args: [ [ 1, 2 ], [ [ [ 2, 0 ] ], [ [ 2, 0 ] ], [ [ 2, 0 ] ], [ [ 2, 0 ] ] ] ],
+       args: [ [ 1, 2 ], solveUtils.buildCluesDistribution([ 2 ], [ [ 0, 3 ] ]) ],
        result: [ 0, 3 ]
      }
+  ],
+
+  narrowBounds: [
+    /**
+     * 
+     *     0 1 2 3 4 5 6 7 8 9
+     * 3 | . . x . # # . . x . |
+     */
+    {
+      args: [ [ 4, 5 ], [ 0, 9 ], [ 0, 0, 2, 0, 1, 1, 0, 0, 2, 0 ] ],
+      result: [ 3, 7 ]
+    }
   ],
 
   generateLineClues: [

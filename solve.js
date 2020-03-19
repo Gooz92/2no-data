@@ -1,4 +1,5 @@
-const solveUtils = require('./solve.utils.js');
+const solveUtils = require('./solve.utils.js'),
+  buildNono = require('./build-nono.js');
 
 function solveBounds(line) {
   const filled = [];
@@ -16,10 +17,27 @@ function solveBounds(line) {
   return solveUtils.getAbsoluteIndexes(line.index, line.side, filled);
 }
 
+function narrowBounds(line) {
+
+  line.clues.forEach((clue, index) => {
+    const bounds = line.bounds[index];
+
+    const blocks = solveUtils.getFilledBlocks(bounds, line.cells.map(c => c.value));
+
+    if (blocks.length !== 1) {
+      return;
+    }
+    
+    const blockClue = solveUtils.detectBlockClue(blocks[0], line.cluesDistribution);
+
+    if (blockClue.length === 2) {
+      line.bounds[index] = solveUtils.narrowBounds(blocks[0], bounds, line.cells.map(c => c.value));
+    }
+  });
+}
+
 function wrapSolvedBlocks(line) {
   const empty = [];
-
-  const cluesDistribution = solveUtils.buildCluesDistribution(line.clues, line.bounds);
 
   line.clues.forEach((clue, index) => {
     const bounds = line.bounds[index];
@@ -32,7 +50,7 @@ function wrapSolvedBlocks(line) {
 
     const block = blocks[0];
 
-    const indexes = solveUtils.findEmptyCells(block, cluesDistribution);
+    const indexes = solveUtils.findEmptyCells(block, line.cluesDistribution);
 
     indexes.forEach(i => {
       if (line.cells[i].value !== 2) {
@@ -68,12 +86,14 @@ function solve(nonogram) {
           nonogram.rows[i].cells[j].value = 2;
         });
       }
+
+      narrowBounds(line);
     });
   } while (changed);
 }
 
 module.exports = (hClues, vClues) => {
-  const nono = solveUtils.build(hClues, vClues);
+  const nono = buildNono(hClues, vClues);
   solve(nono);
   const flatField = solveUtils.toFlatArray(nono.rows);
   return flatField;

@@ -1,5 +1,6 @@
 # TODO
 
-* Store clues distribution
+* merge block
+* forcing
 * Unit test definition becomes to complex. Resolve somehow...
-* Narrow bounds (recalc clues distribution)
+* Recalc clues distribution ?
