@@ -132,25 +132,16 @@ const solveUtils = {
   detectBlockClue(filledBlock, cluesDistribution) {
     const [ startBlock, endBlock ] = filledBlock;
 
-    let blockClueValue = null;
-
     for (let i = startBlock; i <= endBlock; i++) {
       const cellClues = cluesDistribution[i];
       const blockClue = cellClues[0];
-      blockClueValue = blockClue[0];
 
       if (cellClues.length === 1) {
         return blockClue;
       }
-
-      for (let j = 1; j < cellClues.length; j++) {
-        if (blockClueValue !== cellClues[j][0]) {
-          break;
-        }
-      }
     }
 
-    return blockClueValue === null ? null : [ blockClueValue ];
+    return null;
   },
 
   findEmptyCells(filledBlock, cluesDistribution) {

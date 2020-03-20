@@ -1,7 +1,10 @@
 import { createDiv, omit } from './utils.js';
-const solve = require('../solve.js');
 
-const [ hClues, vClues ] = require('../data/bw/duck-10x6.json');
+const buildNono = require('../build-nono.js');
+const createSolver = require('../create-solver.js');
+const solveUtils = require('../solve.utils.js');
+
+const [ hClues, vClues ] = require('../data/bw/15x15.json');
 
 function appendCells(field, colCount, rowCount, cellSize, getOptions = () => ({})) {
 
@@ -145,11 +148,19 @@ const field = buildField(hClues, vClues, 42);
 window.__export2no__ = exportField;
 window.__draw__ = drawField;
 
+const nono = buildNono(hClues, vClues)
+const solver = createSolver(nono);
+
+
 document.addEventListener('DOMContentLoaded', () => {
   document.body.appendChild(field);
 
-  const solution = solve(hClues, vClues);
-  drawField(solution, hClues.length, vClues.length);
+  do {
+    solver.step();
+  } while (solver.changed);
+
+  const flatField = solveUtils.toFlatArray(nono.rows);
+  drawField(flatField, hClues.length, vClues.length);
 });
 
 function drawField(flatField, rowCount, colCount) {
