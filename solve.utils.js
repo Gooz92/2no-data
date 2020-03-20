@@ -38,7 +38,7 @@ const solveUtils = {
       }
     }
     
-    for (let i = blockEnd; i <= end; i++) {
+    for (let i = end; i >= blockEnd; i--) {
       if (cells[i] === 2) {
         newEnd = i - 1;
       }
