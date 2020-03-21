@@ -1,15 +1,15 @@
 [
   [ "1.json", 15, 8, 7, 0 ],
   [ "bicycle.json", 17, 15, 2, 83 ],
-  [ "boat.json", 84, 40, 44, 16 ],
-  [ "skater.json", 27, 21, 6, 73 ],
+  [ "boat.json", 86, 42, 44, 14 ],
+  [ "skater.json", 28, 22, 6, 72 ],
   [ "cherries.json", 5, 5, 0, 139 ],
   [ "turtle.json", 94, 61, 33, 131 ],
   [ "bomb.json", 12, 8, 4, 13 ],
   [ "camel.json", 15, 9, 6, 10 ],
   [ "cat.json", 25, 19, 6, 0 ],
   [ "chicken.json", 25, 12, 13, 0 ],
-  [ "clock.json", 22, 13, 9, 3 ],
+  [ "clock.json", 25, 15, 10, 0 ],
   [ "dog.json", 25, 12, 13, 0 ],
   [ "flag.json", 25, 15, 10, 0 ],
   [ "rabbit.json", 25, 16, 9, 0 ],
@@ -18,10 +18,10 @@
   [ "stairs.json", 25, 16, 9, 0 ],
   [ "window.json", 25, 20, 5, 0 ],
   [ "z.json", 25, 13, 12, 0 ],
-  [ "elephant.json", 56, 36, 20, 8 ],
+  [ "elephant.json", 59, 38, 21, 5 ],
   [ "tower.json", 64, 38, 26, 0 ],
   [ "duck-10x6.json", 42, 19, 23, 18 ],
-  [ "flask-7x8.json", 54, 37, 17, 2 ],
-  [ "house-7x7.json", 42, 20, 22, 7 ],
-  [ "snail-9x6.json", 47, 28, 19, 7 ]
+  [ "flask-7x8.json", 56, 38, 18, 0 ],
+  [ "house-7x7.json", 45, 22, 23, 4 ],
+  [ "snail-9x6.json", 49, 29, 20, 5 ]
 ]

@@ -21,12 +21,31 @@ function narrowBounds(line) {
 
       if (newBounds[0] !== bounds[0] || newBounds[1] !== bounds[1]) {
         changed = true;
-        line.bounds[index] = solveUtils.narrowBounds(blocks[0], bounds, line.cells.map(c => c.value));
+        line.bounds[index] = newBounds;
       }
     }
   });
 
   return changed;
+}
+
+function narrowBounds1(line) {
+  
+  let changed = false;
+
+  const cells = line.cells.map(c => c.value);
+
+  line.clues.forEach((clue, index) => {
+    const bounds = line.bounds[index];
+    const newBounds = solveUtils.narrowBounds1(bounds, cells);
+
+    if (newBounds[0] !== bounds[0] || newBounds[1] !== bounds[1]) {
+      changed = true;
+      line.bounds[index] = newBounds;
+    }
+  });
+
+  return changed; 
 }
 
 
@@ -57,6 +76,10 @@ function step(nonogram) {
     });
 
     if (narrowBounds(line)) {
+      changed = true;
+    }
+
+    if(narrowBounds1(line)) {
       changed = true;
     }
   });

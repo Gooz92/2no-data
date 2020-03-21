@@ -28,6 +28,28 @@ const solveUtils = {
     return bounds;
   },
 
+  narrowBounds1(bounds, cells) {
+    const [ start, end ] = bounds;
+
+    let i = start;
+
+    while (cells[i] === 2) {
+      i++;
+    }
+
+    const newStart = i;
+
+    i = end;
+
+    while (cells[i] === 2) {
+      i--;
+    }
+
+    const newEnd = i;
+    
+    return [ newStart, newEnd ];
+  },
+
   narrowBounds(filledBlock, bounds, cells) {
     const [ blockStart, blockEnd ] = filledBlock;
     const [ start, end ] = bounds;
