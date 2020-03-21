@@ -1,7 +1,9 @@
 [
   [ "1.json", 15, 8, 7, 0 ],
-  [ "155.json", 17, 15, 2, 83 ],
+  [ "bicycle.json", 17, 15, 2, 83 ],
   [ "boat.json", 84, 40, 44, 16 ],
+  [ "skater.json", 27, 21, 6, 73 ],
+  [ "cherries.json", 5, 5, 0, 139 ],
   [ "turtle.json", 94, 61, 33, 131 ],
   [ "bomb.json", 12, 8, 4, 13 ],
   [ "camel.json", 15, 9, 6, 10 ],
