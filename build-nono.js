@@ -1,5 +1,5 @@
 const solveUtils = require('./solve.utils.js'),
-  generateArray = require('./generate-array.js');
+  utils = require('./utils.js');
 
 module.exports = function (horizontalClues, verticalClues) {
   const rows = horizontalClues.map((clues, index) => {
@@ -7,7 +7,7 @@ module.exports = function (horizontalClues, verticalClues) {
       cluesDistribution = solveUtils.buildCluesDistribution(clues, bounds);
 
     return {
-      cells: generateArray(verticalClues.length, () => ({ value: 0 })),
+      cells: utils.generateArray(verticalClues.length, () => ({ value: 0 })),
       clues,
       side: 0,
       bounds,

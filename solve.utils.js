@@ -1,4 +1,4 @@
-const generateArray = require('./generate-array.js');
+const utils = require('./utils.js');
 
 const FILLED = 1;
 
@@ -51,7 +51,7 @@ const solveUtils = {
 
   buildOppositeSideBlocks(sideBlocks, opSideLength) {
 
-    const opSideBlocks = generateArray(opSideLength, () => []);
+    const opSideBlocks = utils.generateArray(opSideLength, () => []);
 
     for (let i = 0; i < sideBlocks.length; i++) {
       const lineBlocks = sideBlocks[i];
