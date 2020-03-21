@@ -112,14 +112,14 @@ function step(nonogram) {
       });
     }
 
-    const filled1 = glue(line); 
+    // const filled1 = glue(line); 
 
-    if (filled1.length > 0) {
-      changed = true;
-      filled1.forEach(([ i, j ]) => {
-        nonogram.rows[i].cells[j].value = 1;
-      });
-    }
+    // if (filled1.length > 0) {
+    //   changed = true;
+    //   filled1.forEach(([ i, j ]) => {
+    //     nonogram.rows[i].cells[j].value = 1;
+    //   });
+    // }
 
     const empty = wrapSolvedBlocks(line);
     if (empty.length > 0) {

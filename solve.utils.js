@@ -1,3 +1,5 @@
+const generateArray = require('./generate-array.js');
+
 const FILLED = 1;
 
 const converters = [
@@ -45,6 +47,33 @@ const solveUtils = {
     }
 
     return [ newStart, newEnd ];
+  },
+
+  buildOppositeSideBlocks(sideBlocks, opSideLength) {
+
+    const opSideBlocks = generateArray(opSideLength, () => []);
+
+    for (let i = 0; i < sideBlocks.length; i++) {
+      const lineBlocks = sideBlocks[i];
+      for (let j = 0; j < lineBlocks.length; j++) {
+        const block = lineBlocks[j];
+        for (let k = block[0]; k <= block[1]; k++) {
+          const opLineBlocks = opSideBlocks[k];
+          if (opLineBlocks.length === 0) {
+            opLineBlocks.push([ i, i ]);
+          } else {
+            const lastOpLineBlock = opLineBlocks[opLineBlocks.length - 1];
+            if (i - lastOpLineBlock[1] === 1) {
+              lastOpLineBlock[1] = i;
+            } else {
+              opLineBlocks.push([ i, i ]);
+            }
+          }
+        }
+      }
+    }
+
+    return opSideBlocks;
   },
 
   simpleBlock(clue, [ left, right ] ) {
