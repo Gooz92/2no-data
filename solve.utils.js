@@ -195,6 +195,34 @@ const solveUtils = {
     return null;
   },
 
+  narrowCluesDistribution(clueIndex, bounds, cluesDistribution) {
+    const [ start, end ] = bounds;
+
+    let changed = false;
+    
+    for (let i = 0; i < start; i++) {
+      const cellClues = cluesDistribution[i];
+      const newCellClues = cellClues.filter(([ clueValue, cellClueIndex ]) => cellClueIndex !== clueIndex);
+
+      if (newCellClues.length < cellClues.length) {
+        changed = true;
+        cluesDistribution[i] = newCellClues;
+      }
+    }
+
+    for (let i = end + 1; i < cluesDistribution.length; i++) {
+      const cellClues = cluesDistribution[i];
+      const newCellClues = cellClues.filter(([ clueValue, cellClueIndex ]) => cellClueIndex !== clueIndex);
+
+      if (newCellClues.length < cellClues.length) {
+        changed = true;
+        cluesDistribution[i] = newCellClues;
+      }
+    }
+
+    return changed;
+  },
+
   findEmptyCells(filledBlock, cluesDistribution) {
     const blockClue = solveUtils.detectBlockClue(filledBlock, cluesDistribution);
 
@@ -211,6 +239,8 @@ const solveUtils = {
         const blockClueIndex = blockClue[1];
         cluesDistribution.forEach((cellClues, cellIndex) => {
           if (cellClues.length === 1 && cellClues[0][1] === blockClueIndex && (cellIndex < startBlock || cellIndex > endBlock)) {
+            emptyCells.push(cellIndex);
+          } else if (cellClues.length === 0) {
             emptyCells.push(cellIndex);
           }
         });
@@ -238,12 +268,16 @@ const solveUtils = {
         const cellClues = cluesDistribution[i];
         if (cellClues.length === 1 && cellClues[0][1] === clueIndex) {
           emptyCells.push(i);
+        } else if (cellClues.length === 0) {
+          emptyCells.push(i);
         }
       }
 
       for (let i = endBlock + delta + 1; i < cluesDistribution.length; i++) {
         const cellClues = cluesDistribution[i];
         if (cellClues.length === 1 && cellClues[0][1] === clueIndex) {
+          emptyCells.push(i);
+        } else if (cellClues.length === 0) {
           emptyCells.push(i);
         }
       }

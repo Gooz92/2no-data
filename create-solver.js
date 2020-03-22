@@ -48,6 +48,17 @@ function narrowBounds1(line) {
   return changed; 
 }
 
+function narrowCluesDistribution(line) {
+
+  let changed = false;
+
+  line.clues.forEach((clue, index) => {
+    const bounds = line.bounds[index];
+    changed = solveUtils.narrowCluesDistribution(index, bounds, line.cluesDistribution);
+  });
+
+  return changed;
+}
 
 function step(nonogram) {
   let changed = false;
@@ -80,6 +91,10 @@ function step(nonogram) {
     }
 
     if(narrowBounds1(line)) {
+      changed = true;
+    }
+
+    if (narrowCluesDistribution(line)) {
       changed = true;
     }
   });

@@ -6,7 +6,7 @@
   [ "cherries.json", 5, 5, 0, 139 ],
   [ "turtle.json", 94, 61, 33, 131 ],
   [ "bomb.json", 12, 8, 4, 13 ],
-  [ "camel.json", 15, 9, 6, 10 ],
+  [ "camel.json", 25, 13, 12, 0 ],
   [ "cat.json", 25, 19, 6, 0 ],
   [ "chicken.json", 25, 12, 13, 0 ],
   [ "clock.json", 25, 15, 10, 0 ],
