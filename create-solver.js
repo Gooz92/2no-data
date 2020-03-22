@@ -73,41 +73,49 @@ function narrowCluesDistribution(line) {
   return changed;
 }
 
-function step(nonogram) {
+function solveLine(line) {
+
+  let changed = false;
+
+  Object.values(lineSolvers).forEach(solver => {
+    const { filled = [], empty = [] } = solver(line);
+
+
+    if (filled.length > 0) {
+      changed = true;
+      filled.forEach(i => {
+        line.cells[i].value = 1;
+      });
+    }
+
+    if (empty.length > 0) {
+      changed = true;
+      empty.forEach(i => {
+        line.cells[i].value = 2;
+      });
+    }
+  });
+
+  if (narrowBounds(line)) {
+    changed = true;
+  }
+
+  if(narrowBounds1(line)) {
+    changed = true;
+  }
+
+  if (narrowCluesDistribution(line)) {
+    changed = true;
+  }
+
+  return changed;
+}
+
+function step(nonogram, lineIndex) {
   let changed = false;
 
   nonogram.lines.forEach(line => {
-
-    Object.values(lineSolvers).forEach(solver => {
-      const { filled = [], empty = [] } = solver(line);
-
-      const fIJ = solveUtils.getAbsoluteIndexes(line.index, line.side, filled),
-        eIJ = solveUtils.getAbsoluteIndexes(line.index, line.side, empty);
-
-      if (fIJ.length > 0) {
-        changed = true;
-        fIJ.forEach(([ i, j ]) => {
-          nonogram.rows[i].cells[j].value = 1;
-        });
-      }
-
-      if (eIJ.length > 0) {
-        changed = true;
-        eIJ.forEach(([ i, j ]) => {
-          nonogram.rows[i].cells[j].value = 2;
-        });
-      }
-    });
-
-    if (narrowBounds(line)) {
-      changed = true;
-    }
-
-    if(narrowBounds1(line)) {
-      changed = true;
-    }
-
-    if (narrowCluesDistribution(line)) {
+    if (solveLine(line)) {
       changed = true;
     }
   });
