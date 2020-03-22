@@ -180,8 +180,10 @@ const solveUtils = {
     return blocks;
   },
 
-  detectBlockClue(filledBlock, cluesDistribution) {
-    const [ startBlock, endBlock ] = filledBlock;
+  detectBlockClue(block, cluesDistribution) {
+    const [ startBlock, endBlock ] = block;
+
+    const blockLength = endBlock - startBlock + 1;
 
     for (let i = startBlock; i <= endBlock; i++) {
       const cellClues = cluesDistribution[i];
@@ -189,6 +191,14 @@ const solveUtils = {
 
       if (cellClues.length === 1) {
         return blockClue;
+      }
+
+      const potentialClues = cellClues.filter(([ clueValue ]) => (
+       clueValue >= blockLength
+      ));
+
+      if (potentialClues.length === 1) {
+        return potentialClues[0];
       }
     }
 

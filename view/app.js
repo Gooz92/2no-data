@@ -4,7 +4,7 @@ const buildNono = require('../build-nono.js');
 const createSolver = require('../create-solver.js');
 const solveUtils = require('../solve.utils.js');
 
-const [ hClues, vClues ] = require('../data/bw/12x12/cherries.json');
+const [ hClues, vClues ] = require('../data/bw/8x8/elephant.json');
 
 function appendCells(field, colCount, rowCount, cellSize, getOptions = () => ({})) {
 

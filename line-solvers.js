@@ -25,7 +25,7 @@ module.exports = {
       const [ start, end ] = solveUtils.simpleBlock(clue, bounds);
 
       for (let i = start; i <= end; i++) {
-        if (line.cells[i].value !== 1) {
+        if (line.cells[i].value === 0) {
           filled.push(i);
         }
       }
@@ -51,7 +51,7 @@ module.exports = {
       const indexes = solveUtils.findEmptyCells(block, line.cluesDistribution);
   
       indexes.forEach(i => {
-        if (line.cells[i].value !== 2) {
+        if (line.cells[i].value === 0) {
           empty.push(i);
         }
       });
@@ -86,30 +86,30 @@ module.exports = {
     return { filled };
   },
 
-   mergeBlocks(line) { // not working ?
-    const filled = [];
+  // mergeBlocks(line) { // not working ?
+  //   const filled = [];
 
-    const cells =  line.cells.map(c => c.value);
+  //   const cells =  line.cells.map(c => c.value);
   
-    line.clues.forEach((clue, index) => {
-      const bounds = line.bounds[index];
+  //   line.clues.forEach((clue, index) => {
+  //     const bounds = line.bounds[index];
   
-      const blocks = solveUtils.getFilledBlocks(bounds, cells);
-      const blocksToMerge = blocks.map(block => ({
-        clueIndex: (solveUtils.detectBlockClue(block, line.cluesDistribution) || [])[1],
-        block
-      })).filter(({ clueIndex }) => clueIndex);
+  //     const blocks = solveUtils.getFilledBlocks(bounds, cells);
+  //     const blocksToMerge = blocks.map(block => ({
+  //       clueIndex: (solveUtils.detectBlockClue(block, line.cluesDistribution) || [])[1],
+  //       block
+  //     })).filter(({ clueIndex }) => clueIndex);
   
-      if (blocksToMerge.length > 1 && blocksToMerge.every(({ clueIndex }) => clueIndex === blocksToMerge[0].clueIndex)) {
-        const indexes = calcIndexesForMerging(blocksToMerge.map(({ block }) => block));
-        indexes.forEach(i => {
-          if (line.cells[i].value === 0) {
-            filled.push(i);
-          }
-        });
-      }
-    });
+  //     if (blocksToMerge.length > 1 && blocksToMerge.every(({ clueIndex }) => clueIndex === blocksToMerge[0].clueIndex)) {
+  //       const indexes = calcIndexesForMerging(blocksToMerge.map(({ block }) => block));
+  //       indexes.forEach(i => {
+  //         if (line.cells[i].value === 0) {
+  //           filled.push(i);
+  //         }
+  //       });
+  //     }
+  //   });
   
-    return { filled };
-  }
+  //   return { filled };
+  // }
 };

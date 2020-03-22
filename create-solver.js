@@ -2,7 +2,6 @@ const solveUtils = require('./solve.utils.js'),
   lineSolvers = require('./line-solvers.js');
 
 function narrowBounds(line) {
-
   let changed = false;
 
   line.clues.forEach((clue, index) => {
@@ -19,9 +18,14 @@ function narrowBounds(line) {
     if (blockClue && blockClue.length === 2) {
       const newBounds = solveUtils.narrowBounds(blocks[0], bounds, line.cells.map(c => c.value));
 
-      if (newBounds[0] !== bounds[0] || newBounds[1] !== bounds[1]) {
+      if (newBounds[0] > bounds[0]) {
         changed = true;
-        line.bounds[index] = newBounds;
+        line.bounds[index][0] = newBounds[0];
+      }
+
+      if (newBounds[1] < bounds[1]) {
+        changed = true;
+        line.bounds[index][1] = newBounds[1];
       }
     }
   });
@@ -39,9 +43,14 @@ function narrowBounds1(line) {
     const bounds = line.bounds[index];
     const newBounds = solveUtils.narrowBounds1(bounds, cells);
 
-    if (newBounds[0] !== bounds[0] || newBounds[1] !== bounds[1]) {
+    if (newBounds[0] > bounds[0]) {
       changed = true;
-      line.bounds[index] = newBounds;
+      line.bounds[index][0] = newBounds[0];
+    }
+
+    if (newBounds[1] < bounds[1]) {
+      changed = true;
+      line.bounds[index][1] = newBounds[1];
     }
   });
 
@@ -54,7 +63,9 @@ function narrowCluesDistribution(line) {
 
   line.clues.forEach((clue, index) => {
     const bounds = line.bounds[index];
-    changed = solveUtils.narrowCluesDistribution(index, bounds, line.cluesDistribution);
+    if (solveUtils.narrowCluesDistribution(index, bounds, line.cluesDistribution)) {
+      changed = true;
+    }
   });
 
   return changed;
