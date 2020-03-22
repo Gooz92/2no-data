@@ -56,13 +56,13 @@ const solveUtils = {
 
     let [ newStart, newEnd ] = bounds;
 
-    for (let i = start; i < blockStart; i++) {
+    for (let i = start; i < blockStart - 1; i++) {
       if (cells[i] === 2) {
         newStart = i + 1;
       }
     }
     
-    for (let i = end; i >= blockEnd; i--) {
+    for (let i = end; i > blockEnd + 1; i--) {
       if (cells[i] === 2) {
         newEnd = i - 1;
       }
@@ -156,28 +156,32 @@ const solveUtils = {
     return distribution;
   },
 
-  getFilledBlocks([ left, right ], line) {
-    const blocks = [];
+  getRanges([ left, right ], cells, status) {
+    const ranges = [];
     let inBlock = false;
     let start = 0;
 
     for (let i = left; i <= right; i++) {
 
-      if (line[i] === FILLED) {
+      if (cells[i] === status) {
         if (inBlock) end = i;
         else start = i;
         inBlock = true;
       } else if (inBlock) {
         inBlock = false;
-        blocks.push([ start, i - 1]);
+        ranges.push([ start, i - 1]);
       }
     }
 
     if (inBlock) {
-      blocks.push([ start, right ]);
+      ranges.push([ start, right ]);
     }
 
-    return blocks;
+    return ranges;
+  },
+
+  getFilledBlocks([ left, right ], cells) {
+    return solveUtils.getRanges([ left, right ], cells, FILLED)
   },
 
   detectBlockClue(block, cluesDistribution) {

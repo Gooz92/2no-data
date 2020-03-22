@@ -4,10 +4,12 @@ const solveUtils = require('./solve.utils.js'),
 function narrowBounds(line) {
   let changed = false;
 
+  const cells = line.cells.map(c => c.value);
+
   line.clues.forEach((clue, index) => {
     const bounds = line.bounds[index];
 
-    const blocks = solveUtils.getFilledBlocks(bounds, line.cells.map(c => c.value));
+    const blocks = solveUtils.getFilledBlocks(bounds, cells);
 
     if (blocks.length !== 1) {
       return;
@@ -15,8 +17,8 @@ function narrowBounds(line) {
     
     const blockClue = solveUtils.detectBlockClue(blocks[0], line.cluesDistribution);
 
-    if (blockClue && blockClue.length === 2) {
-      const newBounds = solveUtils.narrowBounds(blocks[0], bounds, line.cells.map(c => c.value));
+    if (blockClue) {
+      const newBounds = solveUtils.narrowBounds(blocks[0], bounds, cells);
 
       if (newBounds[0] > bounds[0]) {
         changed = true;
