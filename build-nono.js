@@ -36,5 +36,5 @@ module.exports = function (horizontalClues, verticalClues) {
     }
   }
 
-  return { rows, cols, lines: [ ...rows, ...cols ], dims: [ rows, cols ] };
+  return { rows, cols, lines: [ ...rows, ...cols ] };
 }

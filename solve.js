@@ -8,9 +8,11 @@ module.exports = (hClues, vClues) => {
 
   const solver = createSolver(nonogram);
 
+  let line;
+
   do {
-    solver.step();
-  } while (solver.changed);
+    line = solver.solveNextLine();
+  } while (line);
 
   const flatField = solveUtils.toFlatArray(nonogram.rows);
   return flatField;

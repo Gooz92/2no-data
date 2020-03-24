@@ -111,23 +111,41 @@ function solveLine(line) {
   return changed;
 }
 
-function step(nonogram, lineIndex) {
-  let changed = false;
-
-  nonogram.lines.forEach(line => {
-    if (solveLine(line)) {
-      changed = true;
-    }
-  });
-
-  return changed;
-}
-
-module.exports = function createSolver(nono) {
+module.exports = function createSolver(nonogram) {
 
   return {
-    step() {
-      this.changed = step(nono);
+    nonogram,
+
+    lineIndex: 0,
+
+    changed: false,
+
+    nextLine() {
+
+      if (this.lineIndex === this.nonogram.lines.length) {
+        if (!this.changed) {
+          return null;
+        }
+
+        this.changed = false;
+        this.lineIndex = 0;
+      }
+
+      return this.nonogram.lines[this.lineIndex++];
+    },
+
+    solveNextLine() {
+      const line = this.nextLine();
+
+      if (line === null) {
+        return null;
+      }
+
+      if (solveLine(line)) {
+        this.changed = true;
+      }
+
+      return line;
     }
   };
 };

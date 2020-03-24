@@ -321,8 +321,12 @@ const solveUtils = {
     return allClues;
   },
 
+  getAbsoluteIndex(lineIndex, side, cellIndex) {
+    return converters[side](lineIndex, cellIndex);
+  },
+
   getAbsoluteIndexes(lineIndex, side, indexes) {
-    return indexes.map(index => converters[side](lineIndex, index));
+    return indexes.map(index => solveUtils.getAbsoluteIndex(lineIndex, side, index));
   },
 
   toFlatArray(rows) {

@@ -151,16 +151,27 @@ window.__draw__ = drawField;
 const nono = buildNono(hClues, vClues)
 const solver = createSolver(nono);
 
+function drawLine(line) {
+  line.cells.forEach((cell, index) => {
+    const [ i, j ] = solveUtils.getAbsoluteIndex(line.index, line.side, index);
+    const className = [ 'filled', 'empty' ][cell.value - 1];
+    document.getElementById(`cell-${i}-${j}`).classList.add(className);
+  });
+}
+
+function step() {
+  setTimeout(() => {
+    const line = solver.solveNextLine();
+    if (line) {
+      drawLine(line);
+      step();
+    }
+  }, 500);
+}
 
 document.addEventListener('DOMContentLoaded', () => {
   document.body.appendChild(field);
-
-  do {
-    solver.step();
-  } while (solver.changed);
-
-  const flatField = solveUtils.toFlatArray(nono.rows);
-  drawField(flatField, hClues.length, vClues.length);
+  step();
 });
 
 function drawField(flatField, rowCount, colCount) {
