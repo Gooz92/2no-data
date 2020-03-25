@@ -4,7 +4,10 @@ const solveUtils = require('../solve.utils.js');
 
 function appendCells(field, colCount, rowCount, cellSize, getOptions = () => ({})) {
 
+  const cells = [];
+
   for (let i = 0; i < rowCount; i++) {
+    const row = [];
     for (let j = 0; j < colCount; j++) {
 
       const classes = [];
@@ -33,8 +36,12 @@ function appendCells(field, colCount, rowCount, cellSize, getOptions = () => ({}
         ...attributes
       });
       field.appendChild(cell);
+      row.push(cell);
     }
+    cells.push(row);
   }
+
+  return cells;
 }
 
 const findLongestClueLength = clues => (
@@ -112,7 +119,7 @@ function buildField(hClues, vClues, cellSize) {
     }
   });
 
-  appendCells(field, vClues.length, hClues.length, cellSize, (i, j) => ({
+  const cells = appendCells(field, vClues.length, hClues.length, cellSize, (i, j) => ({
     id: buildCellId(i, j),
     onclick: e => {
       e.target.classList.remove('empty');
@@ -125,9 +132,12 @@ function buildField(hClues, vClues, cellSize) {
     }
   }));
 
-  appendCells(vCluesContainer, vClues.length, findLongestClueLength(vClues), cellSize);
+  const verticalClues = appendCells(vCluesContainer, vClues.length, findLongestClueLength(vClues), cellSize);
+
   appendVClues(vCluesContainer, vClues, findLongestClueLength(vClues));
-  appendCells(hCluesContainer, findLongestClueLength(hClues), hClues.length, cellSize);
+
+  const horizontalClues = appendCells(hCluesContainer, findLongestClueLength(hClues), hClues.length, cellSize);
+
   appendHClues(hCluesContainer, hClues, findLongestClueLength(hClues));
 
   container.appendChild(corner);
@@ -135,7 +145,7 @@ function buildField(hClues, vClues, cellSize) {
   container.appendChild(hCluesContainer);
   container.appendChild(field);
 
-  return container;
+  return { element: container, cells, verticalClues, horizontalClues };
 }
 
 function buildCellId(i, j) {
@@ -143,14 +153,17 @@ function buildCellId(i, j) {
 }
 
 export default function (hClues, vClues, cellSize) {
-  const element = buildField(hClues, vClues, cellSize);
+
+  const { element, cells, verticalClues, horizontalClues } = buildField(hClues, vClues, cellSize);
 
   const component = {
     element,
 
-    getCell(i, j) {
-      return component.element.querySelector('#' + buildCellId(i, j));
-    },
+    cells,
+
+    verticalClues, horizontalClues,
+
+    clues: [ horizontalClues, verticalClues ],
 
     exportField() {
       const field = [];
@@ -174,7 +187,7 @@ export default function (hClues, vClues, cellSize) {
     
           if(cellSate > 0) {
             const className = [ 'filled', 'empty' ][cellSate - 1];
-            component.getCell(i, j).classList.add(className);
+            component.cells[i][j].classList.add(className);
           }
         }
       }
@@ -184,7 +197,32 @@ export default function (hClues, vClues, cellSize) {
       line.cells.forEach((cell, index) => {
         const [ i, j ] = solveUtils.getAbsoluteIndex(line.index, line.side, index);
         const className = [ 'filled', 'empty' ][cell.value - 1];
-        component.getCell(i, j).classList.add(className);
+        component.cells[i][j].classList.add(className);
+      });
+    },
+
+    clearHighlighted() {
+      if (!component.hightlighted) {
+        return;
+      }
+
+      component.hightlighted.forEach(clue => {
+        clue.classList.remove('hightlighted');
+      });
+    },
+
+    highlight(clueCells) {
+      component.hightlighted = clueCells;
+      clueCells.forEach(clue => {
+        clue.classList.add('hightlighted');
+      });
+    },
+
+    highlightLine(lineIndex, side) {
+      component.clearHighlighted();
+      component.hightlighted = component.clues[side][lineIndex];
+      component.hightlighted .forEach(clue => {
+        clue.classList.add('hightlighted');
       });
     }
   };

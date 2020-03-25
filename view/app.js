@@ -14,6 +14,7 @@ function step() {
   setTimeout(() => {
     const line = solver.solveNextLine();
     if (line) {
+      nonogramComponent.highlightLine(line.index, line.side);
       nonogramComponent.drawLine(line);
       step();
     }
@@ -23,6 +24,8 @@ function step() {
 document.addEventListener('DOMContentLoaded', () => {
   document.body.appendChild(nonogramComponent.element);
   step();
+
+  nonogramComponent.hightlightRow(3);
 });
 
 

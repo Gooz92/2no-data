@@ -52,3 +52,7 @@
   background-repeat: no-repeat;
   background-size: cover; 
 }
+
+.hightlighted {
+  background-color: #eee;
+}
