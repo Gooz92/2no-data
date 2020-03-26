@@ -56,13 +56,13 @@ const solveUtils = {
 
     let [ newStart, newEnd ] = bounds;
 
-    for (let i = start; i < blockStart - 1; i++) {
+    for (let i = start; i <= blockStart - 1; i++) {
       if (cells[i] === 2) {
         newStart = i + 1;
       }
     }
     
-    for (let i = end; i > blockEnd + 1; i--) {
+    for (let i = end; i >= blockEnd + 1; i--) {
       if (cells[i] === 2) {
         newEnd = i - 1;
       }

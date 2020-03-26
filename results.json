@@ -4,9 +4,9 @@
   [ "boat.json", 94, 42, 52, 6 ],
   [ "skater.json", 28, 22, 6, 72 ],
   [ "cherries.json", 10, 7, 3, 134 ],
-  [ "turtle.json", 97, 59, 38, 128 ],
+  [ "turtle.json", 104, 64, 40, 121 ],
   [ "bomb.json", 25, 12, 13, 0 ],
-  [ "camel.json", 12, 7, 5, 13 ],
+  [ "camel.json", 25, 13, 12, 0 ],
   [ "cat.json", 25, 19, 6, 0 ],
   [ "chicken.json", 25, 12, 13, 0 ],
   [ "clock.json", 25, 15, 10, 0 ],
@@ -20,9 +20,9 @@
   [ "z.json", 25, 13, 12, 0 ],
   [ "elephant.json", 60, 38, 22, 4 ],
   [ "tower.json", 64, 38, 26, 0 ],
-  [ "crazy-man-12x14.json", 69, 44, 25, 99 ],
+  [ "crazy-man-12x14.json", 74, 47, 27, 94 ],
   [ "duck-10x6.json", 42, 19, 23, 18 ],
   [ "flask-7x8.json", 56, 38, 18, 0 ],
-  [ "house-7x7.json", 21, 13, 8, 28 ],
+  [ "house-7x7.json", 49, 24, 25, 0 ],
   [ "snail-9x6.json", 49, 29, 20, 5 ]
 ]
