@@ -1,5 +1,24 @@
 const solveUtils = require('./solve.utils.js');
 
+function blockGlue(block, bounds, line) {
+
+  const filled = [];
+
+  const blockClue = solveUtils.detectBlockClue(block, line.cluesDistribution);
+
+  if (!blockClue) return [];
+
+  const indexes = solveUtils.glue(blockClue[0], block, bounds);
+
+  indexes.forEach(i => {
+    if (line.cells[i].value === 0) {
+      filled.push(i);
+    }
+  });
+
+  return filled;
+}
+
 module.exports = {
   solveBounds(line) {
     const filled = [];
@@ -54,18 +73,15 @@ module.exports = {
 
       if (blocks.length === 0) return;
 
-      const block = blocks[0];
+      const firstBlock = blocks[0];
 
-      const firstBlockClue = solveUtils.detectBlockClue(block, line.cluesDistribution);
+      filled.push(...blockGlue(firstBlock, bounds, line));
 
-      if (!firstBlockClue) return;
+      if (blocks.length > 1) {
+        const lastBlock = blocks[blocks.length - 1];
+        filled.push(...blockGlue(lastBlock, bounds, line));
+      }
 
-      const indexes = solveUtils.glue(clue, block, bounds);
-      indexes.forEach(i => {
-        if (line.cells[i].value === 0) {
-          filled.push(i);
-        }
-      });
     });
 
     return { filled };
