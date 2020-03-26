@@ -17,7 +17,7 @@ function narrowBounds(line) {
     
     const blockClue = solveUtils.detectBlockClue(blocks[0], line.cluesDistribution);
 
-    if (blockClue) {
+    if (blockClue && blockClue[1] === index) {
       const newBounds = solveUtils.narrowBounds(blocks[0], bounds, cells);
 
       if (newBounds[0] > bounds[0]) {

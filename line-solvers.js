@@ -1,12 +1,12 @@
 const solveUtils = require('./solve.utils.js');
 
-function blockGlue(block, bounds, line) {
+function blockGlue(block, bounds, line, index) {
 
   const filled = [];
 
   const blockClue = solveUtils.detectBlockClue(block, line.cluesDistribution);
 
-  if (!blockClue) return [];
+  if (!blockClue || blockClue[1] !== index) return [];
 
   const indexes = solveUtils.glue(blockClue[0], block, bounds);
 
@@ -75,11 +75,11 @@ module.exports = {
 
       const firstBlock = blocks[0];
 
-      filled.push(...blockGlue(firstBlock, bounds, line));
+      filled.push(...blockGlue(firstBlock, bounds, line, index));
 
       if (blocks.length > 1) {
         const lastBlock = blocks[blocks.length - 1];
-        filled.push(...blockGlue(lastBlock, bounds, line));
+        filled.push(...blockGlue(lastBlock, bounds, line, index));
       }
 
     });
