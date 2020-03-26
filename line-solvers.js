@@ -52,19 +52,20 @@ module.exports = {
       const bounds = line.bounds[index];
       const blocks = solveUtils.getFilledBlocks(bounds, cells);
 
-      if (blocks.length === 1) {
-        const block = blocks[0];
-        const blockClue = solveUtils.detectBlockClue(block, line.cluesDistribution);
+      if (blocks.length === 0) return;
 
-        if (!blockClue) return;
+      const block = blocks[0];
 
-        const indexes = solveUtils.glue(clue, block, bounds);
-        indexes.forEach(i => {
-          if (line.cells[i].value === 0) {
-            filled.push(i);
-          }
-        });
-      }
+      const firstBlockClue = solveUtils.detectBlockClue(block, line.cluesDistribution);
+
+      if (!firstBlockClue) return;
+
+      const indexes = solveUtils.glue(clue, block, bounds);
+      indexes.forEach(i => {
+        if (line.cells[i].value === 0) {
+          filled.push(i);
+        }
+      });
     });
 
     return { filled };

@@ -1,6 +1,19 @@
 import { createDiv, omit } from './utils.js';
 
-const solveUtils = require('../solve.utils.js');
+const solveUtils = require('../solve.utils.js'),
+  utils = require('../utils.js');
+
+function transpoe(m) {
+  const mt = utils.generateArray(m[0].length, () => []);
+
+  for (let i = 0; i < m.length; i++) {
+    for (let j = 0; j < m[i].length; j++) {
+      mt[j][i] = m[i][j];
+    }
+  }
+
+  return mt;
+}
 
 function appendCells(field, colCount, rowCount, cellSize, getOptions = () => ({})) {
 
@@ -145,7 +158,7 @@ function buildField(hClues, vClues, cellSize) {
   container.appendChild(hCluesContainer);
   container.appendChild(field);
 
-  return { element: container, cells, verticalClues, horizontalClues };
+  return { element: container, cells, verticalClues: transpoe(verticalClues), horizontalClues };
 }
 
 function buildCellId(i, j) {

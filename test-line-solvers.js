@@ -1,5 +1,5 @@
 const config = {
-  mergeBlocks: [
-    args: [ [] ]
-  ]
+  glue: {
+    line: [ [ ],  ]
+  }
 }
