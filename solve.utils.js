@@ -156,6 +156,26 @@ const solveUtils = {
     return distribution;
   },
 
+  getEmptyBlocks([ left, right ], cells) {
+    const ranges = [];
+    let inBlock = false;
+    let start = 0;
+
+    for (let i = left; i <= right; i++) {
+
+      if (cells[i] === 0 && (i === 0 || cells[i - 1] === 2)) {
+        if (inBlock) end = i;
+        else start = i;
+        inBlock = true;
+      } else if (inBlock) {
+        inBlock = false;
+        if (cells[i] === 2) ranges.push([ start, i - 1]);
+      }
+    }
+
+    return ranges;
+  },
+
   getRanges([ left, right ], cells, status) {
     const ranges = [];
     let inBlock = false;

@@ -85,5 +85,30 @@ module.exports = {
     });
 
     return { filled };
+  },
+
+  markEmpty(line) {
+
+    const cells = line.cells.map(c => c.value);
+
+    const empty = [];
+
+    line.clues.forEach((clue, index) => {
+      const bounds = line.bounds[index];
+
+      const emptyBlocks = solveUtils.getEmptyBlocks(bounds, cells);
+      emptyBlocks.forEach(block => {
+        const bclue = solveUtils.detectBlockClue(block, line.cluesDistribution);
+
+        if (bclue && bclue[0] === clue && clue > block[1] - block[0] + 1) {
+          for (let i = block[0]; i <= block[1]; i++) {
+            if (cells[i] === 0) empty.push(i);
+          }
+        }
+      });
+    });
+
+    return { empty };
   }
+
 };
