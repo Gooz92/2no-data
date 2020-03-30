@@ -88,7 +88,7 @@ module.exports = {
   },
 
   markEmpty(line) {
-
+ 
     const cells = line.cells.map(c => c.value);
 
     const empty = [];

@@ -3,7 +3,7 @@ import buildNonogramComponent from './nonogram.js';
 const buildNono = require('../build-nono.js');
 const createSolver = require('../create-solver.js');
 
-const [ hClues, vClues ] = require('../data/bw/snail-9x6.json');
+const [ hClues, vClues ] = require('../data/bw/house-7x7.json');
 
 const nonogramComponent = buildNonogramComponent(hClues, vClues, 42);
 

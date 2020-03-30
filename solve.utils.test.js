@@ -184,6 +184,17 @@ module.exports = {
     }
   ],
 
+  getEmptyBlocks: [
+    {
+      args: [ [ 0, 6 ], [ 0, 2 ,0, 0, 2, 0, 0 ] ],
+      result: [
+        [ 0, 0 ],
+        [ 2, 3 ],
+        [ 5, 6 ]
+      ]
+    }
+  ],
+
   generateLineClues: [
     {
       args: [ 1 ],

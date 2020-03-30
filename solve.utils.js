@@ -167,7 +167,7 @@ const solveUtils = {
         if (inBlock) end = i;
         else start = i;
         inBlock = true;
-      } else if (inBlock) {
+      } else if (inBlock && cells[i] !== 0) {
         inBlock = false;
         if (cells[i] === 2) ranges.push([ start, i - 1]);
       }
@@ -176,7 +176,7 @@ const solveUtils = {
     return ranges;
   },
 
-  getRanges([ left, right ], cells, status) {
+  getRanges([ left, right ], cells, status) { 
     const ranges = [];
     let inBlock = false;
     let start = 0;
