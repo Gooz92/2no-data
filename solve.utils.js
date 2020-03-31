@@ -33,7 +33,7 @@ const solveUtils = {
 
     let i = start;
 
-    while (cells[i] === 2 || (cells[i] === 1 && cluesDistribution[i] && cluesDistribution[i].length === 1 && cluesDistribution[i][0][1] !== clueIndex)) {
+    while (cells[i] === 2 || (cluesDistribution[i].length === 1 && cluesDistribution[i][0][1] !== clueIndex)) {
       i++;
     }
 
@@ -41,7 +41,7 @@ const solveUtils = {
 
     i = end;
 
-    while (cells[i] === 2 || (cells[i] === 1 && cluesDistribution[i] && cluesDistribution[i].length === 1 && cluesDistribution[i][0][1] !== clueIndex)) {
+    while (cells[i] === 2 || (cluesDistribution[i].length === 1 && cluesDistribution[i][0][1] !== clueIndex)) {
       i--;
     }
 
