@@ -246,6 +246,13 @@ const solveUtils = {
 
       if (potentialClues.length === 1) {
         return potentialClues[0];
+      } else if (potentialClues.length > 1) {
+        for (let i = 1; i < potentialClues.length; i++) {
+          if (potentialClues[0][0] !== potentialClues[i][0]) {
+            return null;
+          }
+        }
+        return [ potentialClues[0][0] ];
       }
     }
 
