@@ -28,12 +28,12 @@ const solveUtils = {
     return bounds;
   },
 
-  narrowBounds1(bounds, cells) {
+  narrowBounds1(bounds, cells, clueIndex, cluesDistribution) {
     const [ start, end ] = bounds;
 
     let i = start;
 
-    while (cells[i] === 2) {
+    while (cells[i] === 2 || (cells[i] === 1 && cluesDistribution[i] && cluesDistribution[i].length === 1 && cluesDistribution[i][0][1] !== clueIndex)) {
       i++;
     }
 
@@ -41,7 +41,7 @@ const solveUtils = {
 
     i = end;
 
-    while (cells[i] === 2) {
+    while (cells[i] === 2 || (cells[i] === 1 && cluesDistribution[i] && cluesDistribution[i].length === 1 && cluesDistribution[i][0][1] !== clueIndex)) {
       i--;
     }
 
@@ -50,7 +50,7 @@ const solveUtils = {
     return [ newStart, newEnd ];
   },
 
-  narrowBounds(filledBlock, bounds, cells) {
+  narrowBounds2(filledBlock, bounds, cells) {
     const [ blockStart, blockEnd ] = filledBlock;
     const [ start, end ] = bounds;
 
@@ -69,6 +69,29 @@ const solveUtils = {
     }
 
     return [ newStart, newEnd ];
+  },
+
+  narrowBounds(bounds, cells, index, cluesDistribution) {
+    const [ s1, e1 ] = solveUtils.narrowBounds1(bounds, cells, index, cluesDistribution);
+
+    const blocks = solveUtils.getFilledBlocks(bounds, cells);
+
+    if (blocks.length !== 1) {
+      return [ s1, e1 ];
+    };
+
+    const blockClue = solveUtils.detectBlockClue(blocks[0], cluesDistribution);
+
+    if (blockClue && blockClue[1] === index) {
+      const [ s2, e2 ] = solveUtils.narrowBounds2(blocks[0], bounds, cells);
+
+      return [
+        Math.max(s1, s2),
+        Math.min(e1, e2)
+      ];
+    }
+
+    return [ s1, e1 ];
   },
 
   buildOppositeSideBlocks(sideBlocks, opSideLength) {
@@ -233,7 +256,7 @@ const solveUtils = {
     const [ start, end ] = bounds;
 
     let changed = false;
-    
+
     for (let i = 0; i < start; i++) {
       const cellClues = cluesDistribution[i];
       const newCellClues = cellClues.filter(([ clueValue, cellClueIndex ]) => cellClueIndex !== clueIndex);

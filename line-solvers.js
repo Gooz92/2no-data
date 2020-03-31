@@ -23,9 +23,18 @@ module.exports = {
   solveBounds(line) {
     const filled = [];
 
+    const cells = line.cells.map(c => c.value);
+
     line.clues.forEach((clue, index) => {
       const bounds = line.bounds[index];
       const [ start, end ] = solveUtils.simpleBlock(clue, bounds);
+
+      if (end - start + 1 === clue) {
+        for (let i = bounds[0]; i <= bounds[1]; i++) {
+          if (cells[i] === 2) line.cluesDistribution[i] = [];
+          if (cells[i] === 1) line.cluesDistribution[i] = [ [ clue, index ] ];
+        }
+      }
 
       for (let i = start; i <= end; i++) {
         if (line.cells[i].value === 0) {
@@ -88,7 +97,7 @@ module.exports = {
   },
 
   markEmpty(line) {
- 
+
     const cells = line.cells.map(c => c.value);
 
     const empty = [];
