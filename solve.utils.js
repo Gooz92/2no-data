@@ -28,12 +28,12 @@ const solveUtils = {
     return bounds;
   },
 
-  narrowBounds1(bounds, cells, clueIndex, cluesDistribution) {
+  narrowBounds1(bounds, cells, clueIndex, distribution) {
     const [ start, end ] = bounds;
 
     let i = start;
 
-    while (cells[i] === 2 || (cluesDistribution[i].length === 1 && cluesDistribution[i][0][1] !== clueIndex)) {
+    while (cells[i] === 2 || (distribution[i].length === 1 && distribution[i][0][1] !== clueIndex)) {
       i++;
     }
 
@@ -41,7 +41,7 @@ const solveUtils = {
 
     i = end;
 
-    while (cells[i] === 2 || (cluesDistribution[i].length === 1 && cluesDistribution[i][0][1] !== clueIndex)) {
+    while (cells[i] === 2 || (distribution[i].length === 1 && distribution[i][0][1] !== clueIndex)) {
       i--;
     }
 
@@ -71,8 +71,8 @@ const solveUtils = {
     return [ newStart, newEnd ];
   },
 
-  narrowBounds(bounds, cells, index, cluesDistribution) {
-    const [ s1, e1 ] = solveUtils.narrowBounds1(bounds, cells, index, cluesDistribution);
+  narrowBounds(bounds, cells, index, distribution) {
+    const [ s1, e1 ] = solveUtils.narrowBounds1(bounds, cells, index, distribution);
 
     const blocks = solveUtils.getFilledBlocks(bounds, cells);
 
@@ -80,7 +80,7 @@ const solveUtils = {
       return [ s1, e1 ];
     };
 
-    const blockClue = solveUtils.detectBlockClue(blocks[0], cluesDistribution);
+    const blockClue = solveUtils.detectBlockClue(blocks[0], distribution);
 
     if (blockClue && blockClue[1] === index) {
       const [ s2, e2 ] = solveUtils.narrowBounds2(blocks[0], bounds, cells);
@@ -287,8 +287,8 @@ const solveUtils = {
     return changed;
   },
 
-  findEmptyCells(filledBlock, cluesDistribution) {
-    const blockClue = solveUtils.detectBlockClue(filledBlock, cluesDistribution);
+  findEmptyCells(filledBlock, distribution) {
+    const blockClue = solveUtils.detectBlockClue(filledBlock, distribution);
 
     const emptyCells = [];
 
@@ -301,7 +301,7 @@ const solveUtils = {
     if (endBlock - startBlock + 1 === blockClue[0]) {
       if (blockClue.length === 2) {
         const blockClueIndex = blockClue[1];
-        cluesDistribution.forEach((cellClues, cellIndex) => {
+        distribution.forEach((cellClues, cellIndex) => {
           if (cellClues.length === 1 && cellClues[0][1] === blockClueIndex && (cellIndex < startBlock || cellIndex > endBlock)) {
             emptyCells.push(cellIndex);
           } else if (cellClues.length === 0) {
@@ -316,7 +316,7 @@ const solveUtils = {
       }
 
       const rightEmpty = endBlock + 1;
-      if (rightEmpty < cluesDistribution.length && !emptyCells.includes(rightEmpty)) {
+      if (rightEmpty < distribution.length && !emptyCells.includes(rightEmpty)) {
         emptyCells.push(rightEmpty);
       }
 
@@ -329,7 +329,7 @@ const solveUtils = {
       const delta = clueValue - blockLength;
 
       for (let i = 0; i < startBlock - delta; i++) {
-        const cellClues = cluesDistribution[i];
+        const cellClues = distribution[i];
         if (cellClues.length === 1 && cellClues[0][1] === clueIndex) {
           emptyCells.push(i);
         } else if (cellClues.length === 0) {
@@ -337,8 +337,8 @@ const solveUtils = {
         }
       }
 
-      for (let i = endBlock + delta + 1; i < cluesDistribution.length; i++) {
-        const cellClues = cluesDistribution[i];
+      for (let i = endBlock + delta + 1; i < distribution.length; i++) {
+        const cellClues = distribution[i];
         if (cellClues.length === 1 && cellClues[0][1] === clueIndex) {
           emptyCells.push(i);
         } else if (cellClues.length === 0) {

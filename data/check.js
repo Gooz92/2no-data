@@ -1,6 +1,6 @@
-const fileUtils = require('./file.utils.js');
+const fileUtils = require('../file.utils.js');
 
-const DATA_FOLDER = './data/bw/';
+const DATA_FOLDER = './bw/';
 
 fileUtils.forEachFile(DATA_FOLDER , file => {
   const nonogram = require(file);
