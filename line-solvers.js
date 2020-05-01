@@ -96,6 +96,40 @@ module.exports = {
     return { filled };
   },
 
+  /*
+   * if length of every block in the line equal to corresponding clue just mark 
+   * unknown cell as empty
+   */
+
+  markSolvedBlocks(line) {
+    const cells = line.cells.map(c => c.value);
+
+    const empty = [];
+
+    const blocks = solveUtils.getFilledBlocks([ 0, cells.length - 1 ], cells );
+
+
+    if (blocks.length !== line.clues.length) {
+      return { empty };
+    }
+
+    const solved = line.clues.every((clue, index) => {
+      const block = blocks[index];
+      const blockLength = block[1] - block[0] + 1;
+      return clue === blockLength;
+    });
+
+    if (!solved) {
+      return { empty };
+    }
+
+    for (let i = 0; i < cells.length; i++) {
+      if (cells[i] === 0) empty.push(i);
+    }
+
+    return { empty }
+  },
+
   markEmpty(line) {
 
     const cells = line.cells.map(c => c.value);

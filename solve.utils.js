@@ -227,15 +227,16 @@ const solveUtils = {
     return solveUtils.getRanges([ left, right ], cells, FILLED)
   },
 
-  detectBlockClue(block, cluesDistribution) {
+  detectBlockClue(block, distribution) {
     const [ startBlock, endBlock ] = block;
 
     const blockLength = endBlock - startBlock + 1;
 
     for (let i = startBlock; i <= endBlock; i++) {
-      const cellClues = cluesDistribution[i];
+      const cellClues = distribution[i];
       const blockClue = cellClues[0];
 
+      // at least one cell might contain 
       if (cellClues.length === 1) {
         return blockClue;
       }
@@ -252,6 +253,8 @@ const solveUtils = {
             return null;
           }
         }
+        
+        // only if all potential clues has same value
         return [ potentialClues[0][0] ];
       }
     }
@@ -259,28 +262,31 @@ const solveUtils = {
     return null;
   },
 
-  narrowCluesDistribution(clueIndex, bounds, cluesDistribution) {
+  // remove clues from distribution for cells outside bounds
+  narrowCluesDistribution(clueIndex, line) {
+    const bounds = line.bounds[clueIndex];
+    const distribution = line.cluesDistribution;
     const [ start, end ] = bounds;
 
     let changed = false;
 
     for (let i = 0; i < start; i++) {
-      const cellClues = cluesDistribution[i];
+      const cellClues = distribution[i];
       const newCellClues = cellClues.filter(([ clueValue, cellClueIndex ]) => cellClueIndex !== clueIndex);
 
       if (newCellClues.length < cellClues.length) {
         changed = true;
-        cluesDistribution[i] = newCellClues;
+        distribution[i] = newCellClues;
       }
     }
 
-    for (let i = end + 1; i < cluesDistribution.length; i++) {
-      const cellClues = cluesDistribution[i];
+    for (let i = end + 1; i < distribution.length; i++) {
+      const cellClues = distribution[i];
       const newCellClues = cellClues.filter(([ clueValue, cellClueIndex ]) => cellClueIndex !== clueIndex);
 
       if (newCellClues.length < cellClues.length) {
         changed = true;
-        cluesDistribution[i] = newCellClues;
+        distribution[i] = newCellClues;
       }
     }
 
@@ -298,6 +304,8 @@ const solveUtils = {
 
     const [ startBlock, endBlock ] = filledBlock;
 
+    // if block length == clue
+    // mark cells in whick can be placed this block as empty
     if (endBlock - startBlock + 1 === blockClue[0]) {
       if (blockClue.length === 2) {
         const blockClueIndex = blockClue[1];
@@ -323,6 +331,7 @@ const solveUtils = {
       return emptyCells;
     }
 
+    // block cannot contain unreachable cells ( < start - delta || > end + delta)
     if (blockClue.length === 2) {
       const [ clueValue, clueIndex ] = blockClue;
       const blockLength = endBlock - startBlock + 1;

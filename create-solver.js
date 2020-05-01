@@ -30,8 +30,7 @@ function narrowCluesDistribution(line) {
   let changed = false;
 
   line.clues.forEach((clue, index) => {
-    const bounds = line.bounds[index];
-    if (solveUtils.narrowCluesDistribution(index, bounds, line.cluesDistribution)) {
+    if (solveUtils.narrowCluesDistribution(index, line)) {
       changed = true;
     }
   });

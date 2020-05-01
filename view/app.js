@@ -2,8 +2,9 @@ import buildNonogramComponent from './nonogram.js';
 
 const buildNono = require('../build-nono.js');
 const createSolver = require('../create-solver.js');
+const solveUtils = require('../solve.utils.js');
 
-const [ hClues, vClues ] = require('../data/bw/duck-10x6.json');
+const [ hClues, vClues ] = require('../data/bw/10x10/bicycle.json');
 
 const nonogramComponent = buildNonogramComponent(hClues, vClues, 42);
 
@@ -15,12 +16,14 @@ window.__nono__ = nono;
 document.addEventListener('DOMContentLoaded', () => {
   document.body.appendChild(nonogramComponent.element);
 
-  document.getElementById('step-btn')
-    .addEventListener('click', e => {
-      const line = solver.solveNextLine();
-      if (line) {
-        nonogramComponent.highlightLine(line.index, line.side);
-        nonogramComponent.drawLine(line);
-      }
-    });
+  let line;
+
+  do {
+    line = solver.solveNextLine();
+  } while (line);
+
+  const field = solveUtils.toFlatArray(nono.rows);
+
+  nonogramComponent.drawField(field);
+
 });
