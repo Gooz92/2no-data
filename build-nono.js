@@ -9,6 +9,7 @@ module.exports = function (horizontalClues, verticalClues) {
     return {
       cells: utils.generateArray(verticalClues.length, () => ({ value: 0 })),
       clues,
+      blocks: utils.generateArray(clues.length, () => []),
       side: 0,
       bounds,
       distribution,
@@ -23,6 +24,7 @@ module.exports = function (horizontalClues, verticalClues) {
     return {
       cells: [],
       clues,
+      blocks: utils.generateArray(clues.length, () => []),
       side: 1,
       bounds,
       distribution,

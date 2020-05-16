@@ -388,12 +388,26 @@ const solveUtils = {
     return indexes.map(index => solveUtils.getAbsoluteIndex(lineIndex, side, index));
   },
 
+  blocksToArray(blocks, length) {
+    const cells = utils.generateArray(length, () => 0);
+
+    blocks.forEach(block => {
+      const [ start, end ] = block;
+
+      for (let i = start; i <= end; i++) {
+        cells[i] = 1;
+      }
+    });
+
+    return cells;
+  },
+
   toFlatArray(rows) {
     const field = [];
 
     rows.forEach(row => {
-      row.cells.forEach(cell => {
-        field.push(cell.value);
+      row.forEach(cell => {
+        field.push(cell);
       });
     });
 

@@ -20,29 +20,10 @@ function blockGlue(block, bounds, line, index) {
 }
 
 module.exports = {
-  solveBounds(line) {
-    const filled = [];
-    const blocks = [];
+  solveBounds(line, bounds, index) {
+    const clue = line.clues[index];
 
-    const cells = line.cells.map(c => c.value);
-
-    line.clues.forEach((clue, index) => {
-      const bounds = line.bounds[index];
-      const [ start, end ] = solveUtils.simpleBlock(clue, bounds);
-      const blockLength = end - start + 1;
-
-
-      if (blockLength > 0) {
-        blocks.push([ start, end ]);
-        for (let i = start; i <= end; i++) {
-          if (line.cells[i].value === 0) {
-            filled.push(i);
-          }
-        }
-      }
-    });
-
-    return { blocks, filled };
+    return { block: solveUtils.simpleBlock(clue, bounds) };
   },
 
   wrapSolvedBlocks(line) {
@@ -77,9 +58,8 @@ module.exports = {
 
     line.clues.forEach((clue, index) => {
       const bounds = line.bounds[index];
-      const blocks = solveUtils.getFilledBlocks(bounds, cells);
 
-      if (blocks.length === 0) return;
+      if (line.blocks.length === 0) return;
 
       const firstBlock = blocks[0];
 
