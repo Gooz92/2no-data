@@ -4,7 +4,7 @@ function blockGlue(block, bounds, line, index) {
 
   const filled = [];
 
-  const blockClue = solveUtils.detectBlockClue(block, line.cluesDistribution);
+  const blockClue = solveUtils.detectBlockClue(block, line.distribution);
 
   if (!blockClue || blockClue[1] !== index) return [];
 
@@ -22,28 +22,27 @@ function blockGlue(block, bounds, line, index) {
 module.exports = {
   solveBounds(line) {
     const filled = [];
+    const blocks = [];
 
     const cells = line.cells.map(c => c.value);
 
     line.clues.forEach((clue, index) => {
       const bounds = line.bounds[index];
       const [ start, end ] = solveUtils.simpleBlock(clue, bounds);
+      const blockLength = end - start + 1;
 
-      if (end - start + 1 === clue) {
-        for (let i = bounds[0]; i <= bounds[1]; i++) {
-          if (cells[i] === 2) line.cluesDistribution[i] = [];
-          if (cells[i] === 1) line.cluesDistribution[i] = [ [ clue, index ] ];
-        }
-      }
 
-      for (let i = start; i <= end; i++) {
-        if (line.cells[i].value === 0) {
-          filled.push(i);
+      if (blockLength > 0) {
+        blocks.push([ start, end ]);
+        for (let i = start; i <= end; i++) {
+          if (line.cells[i].value === 0) {
+            filled.push(i);
+          }
         }
       }
     });
 
-    return { filled };
+    return { blocks, filled };
   },
 
   wrapSolvedBlocks(line) {
@@ -60,7 +59,7 @@ module.exports = {
   
       const block = blocks[0];
   
-      const indexes = solveUtils.findEmptyCells(block, line.cluesDistribution);
+      const indexes = solveUtils.findEmptyCells(block, line.distribution);
   
       indexes.forEach(i => {
         if (line.cells[i].value === 0) {
@@ -141,7 +140,7 @@ module.exports = {
 
       const emptyBlocks = solveUtils.getEmptyBlocks(bounds, cells);
       emptyBlocks.forEach(block => {
-        const bclue = solveUtils.detectBlockClue(block, line.cluesDistribution);
+        const bclue = solveUtils.detectBlockClue(block, line.distribution);
 
         if (bclue && bclue[0] === clue && clue > block[1] - block[0] + 1) {
           for (let i = block[0]; i <= block[1]; i++) {

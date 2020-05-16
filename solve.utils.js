@@ -265,7 +265,7 @@ const solveUtils = {
   // remove clues from distribution for cells outside bounds
   narrowCluesDistribution(clueIndex, line) {
     const bounds = line.bounds[clueIndex];
-    const distribution = line.cluesDistribution;
+    const distribution = line.distribution;
     const [ start, end ] = bounds;
 
     let changed = false;

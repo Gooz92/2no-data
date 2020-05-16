@@ -1,42 +1,35 @@
-const solveUtils = require('./solve.utils.js'),
-  lineSolvers = require('./line-solvers.js');
+const lineSolvers = require('./line-solvers.js');
+const solveUtils = require('./solve.utils.js');
 
-function narrowBounds(line) {
-  
-  let changed = false;
-
-  const cells = line.cells.map(c => c.value);
+function solveBounds(line) {
+  const filled = [];
+  const blocks = [];
 
   line.clues.forEach((clue, index) => {
     const bounds = line.bounds[index];
-    const newBounds = solveUtils.narrowBounds(bounds, cells, index, line.cluesDistribution);
+    const [ start, end ] = solveUtils.simpleBlock(clue, bounds);
+    const blockLength = end - start + 1;
 
-    if (newBounds[0] > bounds[0]) {
-      changed = true;
-      line.bounds[index][0] = newBounds[0];
+    
+    if (blockLength === clue) {
+      for (let i = bounds[0]; i <= bounds[1]; i++) {
+        if (line.cells[i].value === 2) line.distribution[i] = [];
+        if (line.cells[i].value === 1) line.distribution[i] = [ [ clue, index ] ];
+      }
     }
 
-    if (newBounds[1] < bounds[1]) {
-      changed = true;
-      line.bounds[index][1] = newBounds[1];
-    }
-  });
-
-  return changed; 
-}
-
-function narrowCluesDistribution(line) {
-
-  let changed = false;
-
-  line.clues.forEach((clue, index) => {
-    if (solveUtils.narrowCluesDistribution(index, line)) {
-      changed = true;
+    if (blockLength > 0) {
+      blocks.push([ start, end ]);
+      for (let i = start; i <= end; i++) {
+        if (line.cells[i].value === 0) {
+          filled.push(i);
+        }
+      }
     }
   });
 
-  return changed;
-}
+  return { blocks, filled };
+};
 
 function solveLine(line) {
 
@@ -44,7 +37,6 @@ function solveLine(line) {
 
   Object.values(lineSolvers).forEach(solver => {
     const { filled = [], empty = [] } = solver(line);
-
 
     if (filled.length > 0) {
       changed = true;
@@ -61,14 +53,6 @@ function solveLine(line) {
     }
   });
 
-  if (narrowBounds(line)) {
-    changed = true;
-  }
-
-  if (narrowCluesDistribution(line)) {
-    changed = true;
-  }
-
   return changed;
 }
 
@@ -81,9 +65,12 @@ module.exports = function createSolver(nonogram) {
 
     changed: false,
 
+    step: 0,
+
     nextLine() {
 
       if (this.lineIndex === this.nonogram.lines.length) {
+        this.step++;
         if (!this.changed) {
           return null;
         }
@@ -102,7 +89,17 @@ module.exports = function createSolver(nonogram) {
         return null;
       }
 
-      if (solveLine(line)) {
+      if (this.step === 0) {
+        const { filled = [], blocks = [] } = solveBounds(line);
+
+        if (filled.length > 0) {
+          this.changed = true;
+          line.blocks = blocks;
+          filled.forEach(i => {
+            line.cells[i].value = 1;
+          });
+        }
+      } else if (solveLine(line)) {
         this.changed = true;
       }
 

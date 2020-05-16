@@ -4,28 +4,28 @@ const solveUtils = require('./solve.utils.js'),
 module.exports = function (horizontalClues, verticalClues) {
   const rows = horizontalClues.map((clues, index) => {
     const bounds = solveUtils.calculateBounds(clues, verticalClues.length),
-      cluesDistribution = solveUtils.buildCluesDistribution(clues, bounds);
+      distribution = solveUtils.buildCluesDistribution(clues, bounds);
 
     return {
       cells: utils.generateArray(verticalClues.length, () => ({ value: 0 })),
       clues,
       side: 0,
       bounds,
-      cluesDistribution,
+      distribution,
       index
     };
   });
 
   const cols = verticalClues.map((clues, index) => {
     const bounds = solveUtils.calculateBounds(clues, horizontalClues.length),
-      cluesDistribution = solveUtils.buildCluesDistribution(clues, bounds);
+      distribution = solveUtils.buildCluesDistribution(clues, bounds);
 
     return {
       cells: [],
       clues,
       side: 1,
       bounds,
-      cluesDistribution,
+      distribution,
       index
     }
   });

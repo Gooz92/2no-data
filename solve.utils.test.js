@@ -172,29 +172,6 @@ module.exports = {
      }
   ],
 
-  narrowBounds: [
-    /**
-     * 
-     *     0 1 2 3 4 5 6 7 8 9
-     * 3 | . . x . # # . . x . |
-     */
-    {
-      args: [ [ 4, 5 ], [ 0, 9 ], [ 0, 0, 2, 0, 1, 1, 0, 0, 2, 0 ] ],
-      result: [ 3, 7 ]
-    }
-  ],
-
-  getEmptyBlocks: [
-    {
-      args: [ [ 0, 6 ], [ 0, 2 ,0, 0, 2, 0, 0 ] ],
-      result: [
-        [ 0, 0 ],
-        [ 2, 3 ],
-        [ 5, 6 ]
-      ]
-    }
-  ],
-
   generateLineClues: [
     {
       args: [ 1 ],
