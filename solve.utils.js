@@ -32,7 +32,6 @@ const solveUtils = {
     const [ start, end ] = bounds;
 
     let i = start;
-
     while (cells[i] === 2 || (distribution[i].length === 1 && distribution[i][0][1] !== clueIndex)) {
       i++;
     }
