@@ -235,7 +235,7 @@ const solveUtils = {
       const cellClues = distribution[i];
       const blockClue = cellClues[0];
 
-      // at least one cell might contain 
+      // at least one cell might be assigned to one clue
       if (cellClues.length === 1) {
         return blockClue;
       }

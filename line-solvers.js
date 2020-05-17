@@ -51,7 +51,6 @@ module.exports = {
 
   glue(line) {
     const filled = [];
-    const cells =  line.cells.map(c => c.value);
 
     line.clues.forEach((clue, index) => {
       const bounds = line.bounds[index];

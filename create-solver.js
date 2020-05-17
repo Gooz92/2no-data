@@ -1,4 +1,5 @@
 const lineSolvers = require('./line-solvers.js');
+const solveUtils = require('./solve.utils.js');
 
 function getOppositeLine(cell, currentLine) {
   return cell.lines.find(line => line !== currentLine);
@@ -26,14 +27,19 @@ function solveLine(line) {
 
   let changed = false;
 
-  // if (!line.changed && !line.pristine) {
-  //   return;
-  // }
+  if (!line.changed && !line.pristine) {
+    return;
+  }
+
+  if (line.changed && line.pristine) {
+    line.blocks = solveUtils.getFilledBlocks([ 0, line.cells.length ], line.cells.map(c => c.value))
+      .map(bounds => ({ bounds }))
+  }
 
   line.bounds.forEach((bounds, index) => {
     const block = lineSolvers.solveBounds(line, bounds, index);
 
-    if (block !== null && !line.blocks.find(b => b.clue[1] === block.clue[1])) {
+    if (block !== null && block.clue && !line.blocks.find(b => b.clue && b.clue[1] === block.clue[1])) {
       line.blocks.push(block);
       fillBlock(line, block.bounds);
       changed = true;
@@ -44,9 +50,16 @@ function solveLine(line) {
 
     if (block.solved) return;
 
+    if (!block.clue) {
+      const clue = solveUtils.detectBlockClue(block.bounds, line.distribution);
+      if (clue) {
+        block.clue = clue;
+      }
+    }
+
     const blockLength = block.bounds[1] - block.bounds[0] + 1;
 
-    if (blockLength === block.clue[0]) {
+    if (block.clue && blockLength === block.clue[0]) {
       block.solved = true;
       const empty = lineSolvers.wrapSolvedBlock(line, block);
 
@@ -56,8 +69,6 @@ function solveLine(line) {
           markAsEmpty(line, line.cells[emptyIndex]);
         });
       }
-
-      return
     }
   });
 
