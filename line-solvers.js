@@ -22,34 +22,31 @@ function blockGlue(block, bounds, line, index) {
 module.exports = {
   solveBounds(line, bounds, index) {
     const clue = line.clues[index];
+    const blockBounds = solveUtils.simpleBlock(clue, bounds);
 
-    return { block: solveUtils.simpleBlock(clue, bounds) };
+    if (blockBounds.length > 0) {
+      return {
+        clue: [ clue, index ],
+        bounds: blockBounds
+      };
+    }
+
+    return null;
   },
 
-  wrapSolvedBlocks(line) {
+  wrapSolvedBlock(line, block) {
+    const [ start, end ] = block.bounds;
     const empty = [];
-  
-    line.clues.forEach((clue, index) => {
-      const bounds = line.bounds[index];
-  
-      const blocks = solveUtils.getFilledBlocks(bounds, line.cells.map(c => c.value));
-  
-      if (blocks.length !== 1) {
-        return;
-      }
-  
-      const block = blocks[0];
-  
-      const indexes = solveUtils.findEmptyCells(block, line.distribution);
-  
-      indexes.forEach(i => {
-        if (line.cells[i].value === 0) {
-          empty.push(i);
-        }
-      });
-    });
-  
-    return { empty };
+
+    if (start > 0 && line.cells[start - 1].value !== 2) {
+      empty.push(start - 1);
+    }
+
+    if (end < line.cells.length - 1 && line.cells[end + 1].value !== 2) {
+      empty.push(end + 1);
+    }
+
+    return empty;
   },
 
   glue(line) {

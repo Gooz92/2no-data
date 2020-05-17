@@ -5,16 +5,19 @@ module.exports = function (horizontalClues, verticalClues) {
   const rows = horizontalClues.map((clues, index) => {
     const bounds = solveUtils.calculateBounds(clues, verticalClues.length),
       distribution = solveUtils.buildCluesDistribution(clues, bounds);
-
-    return {
-      cells: utils.generateArray(verticalClues.length, () => ({ value: 0 })),
+    
+    const row = {
       clues,
-      blocks: utils.generateArray(clues.length, () => []),
+      blocks: [],
       side: 0,
       bounds,
       distribution,
       index
     };
+
+    row.cells = utils.generateArray(verticalClues.length, () => ({ value: 0, row }));
+
+    return row;
   });
 
   const cols = verticalClues.map((clues, index) => {
@@ -24,7 +27,7 @@ module.exports = function (horizontalClues, verticalClues) {
     return {
       cells: [],
       clues,
-      blocks: utils.generateArray(clues.length, () => []),
+      blocks: [],
       side: 1,
       bounds,
       distribution,
@@ -34,7 +37,9 @@ module.exports = function (horizontalClues, verticalClues) {
 
   for (let i = 0; i < horizontalClues.length; i++) {
     for (let j = 0; j < verticalClues.length; j++) {
-      cols[j].cells[i] = rows[i].cells[j];
+      const cell = rows[i].cells[j];
+      cell.col = cols[j];
+      cols[j].cells[i] = cell;
     }
   }
 

@@ -122,8 +122,7 @@ const solveUtils = {
   },
 
   simpleBlock(clue, [ left, right ] ) {
-    const start = right - clue + 1,
-      end = left + clue - 1;
+    const start = right - clue + 1, end = left + clue - 1;
     
     if (start <= end) {
       return [ start, end ];
@@ -388,9 +387,7 @@ const solveUtils = {
     return indexes.map(index => solveUtils.getAbsoluteIndex(lineIndex, side, index));
   },
 
-  blocksToArray(blocks, length) {
-    const cells = utils.generateArray(length, () => 0);
-
+  fillBlocks(blocks, cells) {
     blocks.forEach(block => {
       const [ start, end ] = block;
 
@@ -398,8 +395,6 @@ const solveUtils = {
         cells[i] = 1;
       }
     });
-
-    return cells;
   },
 
   toFlatArray(rows) {
