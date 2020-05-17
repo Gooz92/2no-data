@@ -9,11 +9,7 @@ function fillBlock(line, blockBounds) {
   const [ start, end ] = blockBounds;
 
   for (let i = start; i <= end; i++) {
-    const cell = line.cells[i];
-    const opLine = getOppositeLine(cell, line);
-
-    cell.value = 1;
-    opLine.changed = true;
+    markAsFilled(line, line.cells[i]);
   }
 }
 
@@ -37,19 +33,35 @@ function solveLine(line) {
     return;
   }
 
+  const cells = line.cells.map(c => c.value);
+
   if (line.changed && line.blocks.length === 0) {
-    line.blocks = solveUtils.getFilledBlocks([ 0, line.cells.length ], line.cells.map(c => c.value))
+    line.blocks = solveUtils.getFilledBlocks([ 0, line.cells.length ], cells)
       .map(bounds => ({ bounds }))
   }
 
   line.bounds.forEach((bounds, index) => {
     const block = lineSolvers.solveBounds(line, bounds, index);
 
+    const newBounds = solveUtils.narrowBounds(bounds, cells, index, line.distribution);
+
+    if (newBounds[0] > bounds[0]) {
+      bounds[0] = newBounds[0];
+      changed = true;
+    }
+
+    if (newBounds[1] < bounds[1]) {
+      bounds[1] = newBounds[1];
+      changed = true;
+    }
+
     if (block !== null && block.clue && !line.blocks.find(b => b.clue && b.clue[1] === block.clue[1])) {
       line.blocks.push(block);
       fillBlock(line, block.bounds);
       changed = true;
     }
+
+
   });
 
   line.blocks.forEach(block => {
