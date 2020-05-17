@@ -23,6 +23,12 @@ function markAsEmpty(line, cell) {
   opLine.changed = true;
 }
 
+function markAsFilled(line, cell) {
+  cell.value = 1;
+  const opLine = getOppositeLine(cell, line);
+  opLine.changed = true;
+}
+
 function solveLine(line) {
 
   let changed = false;
@@ -54,12 +60,14 @@ function solveLine(line) {
       const clue = solveUtils.detectBlockClue(block.bounds, line.distribution);
       if (clue) {
         block.clue = clue;
+      } else {
+        return
       }
     }
 
     const blockLength = block.bounds[1] - block.bounds[0] + 1;
 
-    if (block.clue && blockLength === block.clue[0]) {
+    if (blockLength === block.clue[0]) {
       block.solved = true;
       const empty = lineSolvers.wrapSolvedBlock(line, block);
 
@@ -67,6 +75,14 @@ function solveLine(line) {
         changed = true;
         empty.forEach(emptyIndex => {
           markAsEmpty(line, line.cells[emptyIndex]);
+        });
+      }
+    } else if (block.clue.length === 2) {
+      const filled = solveUtils.glue(block.clue[0], block.bounds, line.bounds[block.clue[1]]);
+      if (filled.length > 0) {
+        changed = true;
+        filled.forEach(index => {
+          markAsFilled(line, line.cells[index]);
         });
       }
     }

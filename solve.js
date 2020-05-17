@@ -14,12 +14,9 @@ module.exports = (hClues, vClues) => {
     line = solver.solveNextLine();
   } while (line);
 
-  const rows = nonogram.rows.map(row => {
-    const cells = row.cells.map(c => c.value);
-    const blocks = row.blocks.map(block => block.bounds);
-    solveUtils.fillBlocks(blocks, cells);
-    return cells;
-  });
+  const rows = nonogram.rows.map(row => (
+    row.cells.map(c => c.value)
+  ));
 
   const flatField = solveUtils.toFlatArray(rows);
   return flatField;

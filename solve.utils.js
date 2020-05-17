@@ -131,12 +131,12 @@ const solveUtils = {
     return [];
   },
 
-  glue(clue, filledBlock, bounds) {
+  glue(clue, block, bounds) {
 
     const filled = [];
 
     const [ start, end ] = bounds;
-    const [ startBlock, endBlock ] = filledBlock;
+    const [ startBlock, endBlock ] = block;
     const delta = clue - endBlock + startBlock - 1;
 
     const leftPadding = startBlock - start;

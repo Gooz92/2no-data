@@ -22,7 +22,11 @@ document.addEventListener('DOMContentLoaded', () => {
     line = solver.solveNextLine();
   } while (line);
 
-  const field = solveUtils.toFlatArray(nono.rows);
+  const rows = nono.rows.map(row => (
+    row.cells.map(c => c.value)
+  ));
+
+  const field = solveUtils.toFlatArray(rows);
 
   nonogramComponent.drawField(field);
 
