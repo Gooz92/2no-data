@@ -8,9 +8,13 @@ function getOppositeLine(cell, currentLine) {
 function fillBlock(line, blockBounds) {
   const [ start, end ] = blockBounds;
 
+  let changed = false;
+
   for (let i = start; i <= end; i++) {
-    markAsFilled(line, i);
+    changed = markAsFilled(line, i);
   }
+
+  return changed;
 }
 
 function markAsEmpty(line, index) {
@@ -22,9 +26,11 @@ function markAsEmpty(line, index) {
 
 function markAsFilled(line, index) {
   const cell = line.cells[index];
+  const changed = cell.value === 0;
   cell.value = 1;
   const opLine = getOppositeLine(cell, line);
   opLine.changed = true;
+  return changed;
 }
 
 function solveLine(line) {
@@ -33,7 +39,7 @@ function solveLine(line) {
 
   const cells = line.cells.map(c => c.value);
 
-  if (line.changed && line.blocks.length === 0) {
+  if (line.changed) {
     line.blocks = solveUtils.getFilledBlocks([ 0, line.cells.length ], cells)
       .map(bounds => ({ bounds }))
   }
@@ -55,8 +61,7 @@ function solveLine(line) {
 
     if (block !== null && block.clue && !line.blocks.find(b => b.clue && b.clue[1] === block.clue[1])) {
       line.blocks.push(block);
-      fillBlock(line, block.bounds);
-      changed = true;
+      changed = fillBlock(line, block.bounds);
     }
   });
 
