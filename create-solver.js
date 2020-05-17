@@ -45,8 +45,6 @@ function solveLine(line) {
   }
 
   line.bounds.forEach((bounds, index) => {
-    const block = lineSolvers.solveBounds(line, bounds, index);
-
     const newBounds = solveUtils.narrowBounds(bounds, cells, index, line.distribution);
 
     if (newBounds[0] > bounds[0]) {
@@ -58,6 +56,8 @@ function solveLine(line) {
       bounds[1] = newBounds[1];
       changed = true;
     }
+
+    const block = lineSolvers.solveBounds(line, bounds, index);
 
     if (block !== null && block.clue && !line.blocks.find(b => b.clue && b.clue[1] === block.clue[1])) {
       line.blocks.push(block);

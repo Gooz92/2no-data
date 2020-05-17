@@ -2,11 +2,11 @@
   [ "1.json", 15, 8, 7, 0 ],
   [ "bicycle.json", 35, 21, 14, 65 ],
   [ "boat.json", 51, 34, 17, 49 ],
-  [ "chicken.json", 31, 15, 16, 69 ],
+  [ "chicken.json", 28, 15, 13, 72 ],
   [ "skater.json", 28, 22, 6, 72 ],
   [ "cherries.json", 7, 7, 0, 137 ],
   [ "rocking-horse.json", 44, 32, 12, 100 ],
-  [ "tick.json", 33, 29, 4, 163 ],
+  [ "tick.json", 34, 30, 4, 162 ],
   [ "turtle.json", 62, 54, 8, 163 ],
   [ "bomb.json", 22, 12, 10, 3 ],
   [ "camel.json", 19, 11, 8, 6 ],
@@ -26,6 +26,6 @@
   [ "crazy-man-12x14.json", 54, 37, 17, 114 ],
   [ "duck-10x6.json", 16, 11, 5, 44 ],
   [ "flask-7x8.json", 52, 38, 14, 4 ],
-  [ "house-7x7.json", 18, 13, 5, 31 ],
+  [ "house-7x7.json", 25, 16, 9, 24 ],
   [ "snail-9x6.json", 41, 28, 13, 13 ]
 ]
