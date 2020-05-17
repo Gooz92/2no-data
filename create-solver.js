@@ -37,7 +37,7 @@ function solveLine(line) {
     return;
   }
 
-  if (line.changed && line.pristine) {
+  if (line.changed && line.blocks.length === 0) {
     line.blocks = solveUtils.getFilledBlocks([ 0, line.cells.length ], line.cells.map(c => c.value))
       .map(bounds => ({ bounds }))
   }
@@ -80,9 +80,11 @@ function solveLine(line) {
     } else if (block.clue.length === 2) {
       const filled = solveUtils.glue(block.clue[0], block.bounds, line.bounds[block.clue[1]]);
       if (filled.length > 0) {
-        changed = true;
         filled.forEach(index => {
-          markAsFilled(line, line.cells[index]);
+          if (line.cells[index].value !== 1) {
+            changed = true;
+            markAsFilled(line, line.cells[index]);
+          }
         });
       }
     }
