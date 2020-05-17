@@ -1,45 +1,42 @@
 const solveUtils = require('./solve.utils.js'),
   utils = require('./utils.js');
 
+function buildLine(clues, length, index, side) {
+  const bounds = solveUtils.calculateBounds(clues, length);
+  const distribution = solveUtils.buildCluesDistribution(clues, bounds);
+
+  return {
+    clues,
+    changed: false,
+    pristine: true,
+    blocks: [],
+    side,
+    bounds,
+    distribution,
+    index
+  };
+}
+
 module.exports = function (horizontalClues, verticalClues) {
   const rows = horizontalClues.map((clues, index) => {
-    const bounds = solveUtils.calculateBounds(clues, verticalClues.length),
-      distribution = solveUtils.buildCluesDistribution(clues, bounds);
-    
-    const row = {
-      clues,
-      blocks: [],
-      side: 0,
-      bounds,
-      distribution,
-      index
-    };
-
-    row.cells = utils.generateArray(verticalClues.length, () => ({ value: 0, row }));
-
+    const row = buildLine(clues, verticalClues.length, index, 0);
+    row.cells = utils.generateArray(verticalClues.length, () => ({ value: 0, lines: [ row ] }));
     return row;
   });
 
   const cols = verticalClues.map((clues, index) => {
-    const bounds = solveUtils.calculateBounds(clues, horizontalClues.length),
-      distribution = solveUtils.buildCluesDistribution(clues, bounds);
-
-    return {
-      cells: [],
-      clues,
-      blocks: [],
-      side: 1,
-      bounds,
-      distribution,
-      index
-    }
+    const col = buildLine(clues, horizontalClues.length, index, 1);
+    col.cells = [];
+    return col;
   });
 
   for (let i = 0; i < horizontalClues.length; i++) {
     for (let j = 0; j < verticalClues.length; j++) {
       const cell = rows[i].cells[j];
-      cell.col = cols[j];
-      cols[j].cells[i] = cell;
+      const col = cols[j];
+
+      cell.lines.push(col);
+      col.cells[i] = cell;
     }
   }
 
