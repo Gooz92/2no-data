@@ -21,8 +21,9 @@ function markAsEmpty(line, index) {
   const cell = line.cells[index];  
   const changed = cell.value === 0;
   cell.value = 2;
-  // line.distribution[index] = [];
   const opLine = getOppositeLine(cell, line);
+  opLine.distribution[opLine.cells.indexOf(cell)] = [];
+  line.distribution[index] = [];
   opLine.changed = true;
   return changed;
 }
@@ -138,7 +139,28 @@ function solveLine(line) {
         });
       }
 
-     
+      const [ startBlock, endBlock ] = block.bounds;
+      const [ clueValue, clueIndex ] = block.clue;
+      const blockLength = endBlock - startBlock + 1;
+      const delta = clueValue - blockLength;
+
+      for (let i = 0; i < startBlock - delta; i++) {
+        const cellClues = line.distribution[i];
+        if (cellClues.length === 1 && cellClues[0][1] === clueIndex) {
+          markAsEmpty(line, i);
+        } else if (cellClues.length === 0) {
+          markAsEmpty(line, i);
+        }
+      }
+
+      for (let i = endBlock + delta + 1; i < line.distribution.length; i++) {
+        const cellClues = line.distribution[i];
+        if (cellClues.length === 1 && cellClues[0][1] === clueIndex) {
+          markAsEmpty(line, i);
+        } else if (cellClues.length === 0) {
+          markAsEmpty(line, i);
+        }
+      }
     }
   });
 
