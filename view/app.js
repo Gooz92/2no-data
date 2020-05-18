@@ -4,7 +4,7 @@ const buildNono = require('../build-nono.js');
 const createSolver = require('../create-solver.js');
 const solveUtils = require('../solve.utils.js');
 
-const [ hClues, vClues ] = require('../data/bw/1.json');
+const [ hClues, vClues ] = require('../data/bw/5x5/rabbit.json');
 
 const nonogramComponent = buildNonogramComponent(hClues, vClues, 42);
 

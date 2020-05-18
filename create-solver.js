@@ -18,10 +18,12 @@ function fillBlock(line, blockBounds) {
 }
 
 function markAsEmpty(line, index) {
-  const cell = line.cells[index];
+  const cell = line.cells[index];  
+  const changed = cell.value === 0;
   cell.value = 2;
   const opLine = getOppositeLine(cell, line);
   opLine.changed = true;
+  return changed;
 }
 
 function markAsFilled(line, index) {
@@ -88,19 +90,39 @@ function solveLine(line) {
       if (empty.length > 0) {
         changed = true;
         empty.forEach(emptyIndex => {
-          markAsEmpty(line, emptyIndex);
+          changed = markAsEmpty(line, emptyIndex) || changed;
         });
       }
+
+      if (block.clue.length === 2) {
+        const [ start, end ] = line.bounds[block.clue[1]];
+
+        for (let i = start; i < block.bounds[0]; i++) {
+          const cellClues = line.distribution[i];
+          if (cellClues.length === 1 && cellClues[0][1] === block.clue[1]) {
+            markAsEmpty(line, i);
+          }
+        }
+  
+        for (let i = block.bounds[1] + 1; i <= end; i++) {
+          const cellClues = line.distribution[i];
+          if (cellClues.length === 1 && cellClues[0][1] === block.clue[1]) {
+            markAsEmpty(line, i);
+          }
+        }
+      }
+
     } else if (block.clue.length === 2) {
       const filled = solveUtils.glue(block.clue[0], block.bounds, line.bounds[block.clue[1]]);
       if (filled.length > 0) {
         filled.forEach(index => {
           if (line.cells[index].value !== 1) {
-            changed = true;
-            markAsFilled(line, index);
+            changed = markAsFilled(line, index) || changed;
           }
         });
       }
+
+     
     }
   });
 
