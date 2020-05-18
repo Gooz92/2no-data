@@ -11,7 +11,7 @@ function fillBlock(line, blockBounds) {
   let changed = false;
 
   for (let i = start; i <= end; i++) {
-    changed = markAsFilled(line, i);
+    changed = markAsFilled(line, i) || changed;
   }
 
   return changed;
@@ -39,11 +39,6 @@ function solveLine(line) {
 
   const cells = line.cells.map(c => c.value);
 
-  if (line.changed) {
-    line.blocks = solveUtils.getFilledBlocks([ 0, line.cells.length ], cells)
-      .map(bounds => ({ bounds }))
-  }
-
   line.bounds.forEach((bounds, index) => {
     const newBounds = solveUtils.narrowBounds(bounds, cells, index, line.distribution);
 
@@ -59,29 +54,35 @@ function solveLine(line) {
 
     const block = lineSolvers.solveBounds(line, bounds, index);
 
-    if (block !== null && block.clue && !line.blocks.find(b => b.clue && b.clue[1] === block.clue[1])) {
-      line.blocks.push(block);
-      changed = fillBlock(line, block.bounds);
+    if (block !== null) {
+      changed = fillBlock(line, block.bounds) || changed;
     }
   });
 
-  line.blocks.forEach(block => {
+  const blocks = solveUtils.getFilledBlocks([ 0, line.cells.length ], cells)
+    .map(bounds => {
+      const block = { bounds };
+      const [ start, end ] = bounds;
+      const blockLength = end - start + 1;
+      const clue = solveUtils.detectBlockClue(bounds, line.distribution);
 
-    if (block.solved) return;
+      if (clue === null) {
+        return block;
+      }
+
+      block.clue = clue;
+      block.solved = clue[0] === blockLength;
+
+      return block;
+    });
+
+  blocks.forEach(block => {
 
     if (!block.clue) {
-      const clue = solveUtils.detectBlockClue(block.bounds, line.distribution);
-      if (clue) {
-        block.clue = clue;
-      } else {
-        return
-      }
+      return
     }
 
-    const blockLength = block.bounds[1] - block.bounds[0] + 1;
-
-    if (blockLength === block.clue[0]) {
-      block.solved = true;
+    if (block.solved) {
       const empty = lineSolvers.wrapSolvedBlock(line, block);
 
       if (empty.length > 0) {
