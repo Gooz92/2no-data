@@ -21,6 +21,7 @@ function markAsEmpty(line, index) {
   const cell = line.cells[index];  
   const changed = cell.value === 0;
   cell.value = 2;
+  // line.distribution[index] = [];
   const opLine = getOppositeLine(cell, line);
   opLine.changed = true;
   return changed;
@@ -33,6 +34,29 @@ function markAsFilled(line, index) {
   const opLine = getOppositeLine(cell, line);
   opLine.changed = true;
   return changed;
+}
+
+function getBlocks(line) {
+  
+  const cells = line.cells.map(c => c.value);
+
+  const blocks = solveUtils.getFilledBlocks([ 0, line.cells.length ], cells);
+
+  return blocks.map(bounds => {
+    const block = { bounds };
+    const [ start, end ] = bounds;
+    const blockLength = end - start + 1;
+    const clue = solveUtils.detectBlockClue(bounds, line.distribution);
+
+    if (clue === null) {
+      return block;
+    }
+
+    block.clue = clue;
+    block.solved = clue[0] === blockLength;
+
+    return block;
+  });
 }
 
 function solveLine(line) {
@@ -59,24 +83,17 @@ function solveLine(line) {
     if (block !== null) {
       changed = fillBlock(line, block.bounds) || changed;
     }
+
+    if (solveUtils.narrowCluesDistribution(index, line)) {
+      changed = true;
+    }
   });
 
-  const blocks = solveUtils.getFilledBlocks([ 0, line.cells.length ], cells)
-    .map(bounds => {
-      const block = { bounds };
-      const [ start, end ] = bounds;
-      const blockLength = end - start + 1;
-      const clue = solveUtils.detectBlockClue(bounds, line.distribution);
+  line.cells.forEach((cell, index) => {
+    if (line.distribution[index].length === 0) markAsEmpty(line, index)
+  })
 
-      if (clue === null) {
-        return block;
-      }
-
-      block.clue = clue;
-      block.solved = clue[0] === blockLength;
-
-      return block;
-    });
+  const blocks = getBlocks(line);
 
   blocks.forEach(block => {
 
@@ -95,7 +112,6 @@ function solveLine(line) {
       }
 
       if (block.clue.length === 2) {
-        const [ start, end ] = line.bounds[block.clue[1]];
 
         for (let i = 0; i < block.bounds[0]; i++) {
           const cellClues = line.distribution[i];
