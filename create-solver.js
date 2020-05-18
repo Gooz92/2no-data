@@ -97,14 +97,14 @@ function solveLine(line) {
       if (block.clue.length === 2) {
         const [ start, end ] = line.bounds[block.clue[1]];
 
-        for (let i = start; i < block.bounds[0]; i++) {
+        for (let i = 0; i < block.bounds[0]; i++) {
           const cellClues = line.distribution[i];
           if (cellClues.length === 1 && cellClues[0][1] === block.clue[1]) {
             markAsEmpty(line, i);
           }
         }
   
-        for (let i = block.bounds[1] + 1; i <= end; i++) {
+        for (let i = block.bounds[1] + 1; i < line.cells.length; i++) {
           const cellClues = line.distribution[i];
           if (cellClues.length === 1 && cellClues[0][1] === block.clue[1]) {
             markAsEmpty(line, i);
