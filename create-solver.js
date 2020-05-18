@@ -147,6 +147,10 @@ function solveLine(line) {
             changed = markAsEmpty(line, i) || changed
           }
         }
+
+        for (let i = block.bounds[0]; i <= block.bounds[1]; i++) {
+          line.distribution[i] = [ block.clue ];
+        }
       }
 
     } else if (block.clue.length === 2) {
@@ -221,10 +225,6 @@ module.exports = function createSolver(nonogram) {
         this.changed = true;
       }
 
-      
-      // if (solveLine(line)) {
-      //   this.changed = true;
-      // }
       return line;
     }
   };
