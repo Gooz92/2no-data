@@ -60,6 +60,7 @@ function getBlocks(line) {
   });
 }
 
+
 function solveLine(line) {
 
   let changed = false;
@@ -96,7 +97,7 @@ function solveLine(line) {
 
       if (bclue && bclue[0] === clue && clue > block[1] - block[0] + 1) {
         for (let i = block[0]; i <= block[1]; i++) {
-          if (cells[i] === 0) markAsEmpty(line, i)
+          if (cells[i] === 0) changed = markAsEmpty(line, i) || changed
         }
       }
     });
@@ -104,10 +105,16 @@ function solveLine(line) {
   });
 
   line.cells.forEach((cell, index) => {
-    if (line.distribution[index].length === 0) markAsEmpty(line, index)
+    if (line.distribution[index].length === 0) changed = markAsEmpty(line, index) || changed
   })
 
   const blocks = getBlocks(line);
+
+  if (blocks.every(b => b.solved) && blocks.length === line.clues.length) {
+    line.cells.forEach((c, i) => {
+      if (c.value === 0) changed = markAsEmpty(line, i) || changed;
+    });
+  }
 
   blocks.forEach(block => {
 
@@ -130,14 +137,14 @@ function solveLine(line) {
         for (let i = 0; i < block.bounds[0]; i++) {
           const cellClues = line.distribution[i];
           if (cellClues.length === 1 && cellClues[0][1] === block.clue[1]) {
-            markAsEmpty(line, i);
+            changed = markAsEmpty(line, i) || changed
           }
         }
   
         for (let i = block.bounds[1] + 1; i < line.cells.length; i++) {
           const cellClues = line.distribution[i];
           if (cellClues.length === 1 && cellClues[0][1] === block.clue[1]) {
-            markAsEmpty(line, i);
+            changed = markAsEmpty(line, i) || changed
           }
         }
       }
@@ -160,18 +167,14 @@ function solveLine(line) {
       for (let i = 0; i < startBlock - delta; i++) {
         const cellClues = line.distribution[i];
         if (cellClues.length === 1 && cellClues[0][1] === clueIndex) {
-          markAsEmpty(line, i);
-        } else if (cellClues.length === 0) {
-          markAsEmpty(line, i);
+          changed = markAsEmpty(line, i) || changed
         }
       }
 
       for (let i = endBlock + delta + 1; i < line.distribution.length; i++) {
         const cellClues = line.distribution[i];
         if (cellClues.length === 1 && cellClues[0][1] === clueIndex) {
-          markAsEmpty(line, i);
-        } else if (cellClues.length === 0) {
-          markAsEmpty(line, i);
+          changed = markAsEmpty(line, i) || changed
         }
       }
     }
@@ -218,6 +221,10 @@ module.exports = function createSolver(nonogram) {
         this.changed = true;
       }
 
+      
+      // if (solveLine(line)) {
+      //   this.changed = true;
+      // }
       return line;
     }
   };
