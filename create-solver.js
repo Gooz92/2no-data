@@ -82,12 +82,25 @@ function solveLine(line) {
     const block = lineSolvers.solveBounds(line, bounds, index);
 
     if (block !== null) {
-      changed = fillBlock(line, block.bounds) || changed;
+      changed = fillBlock(line, block) || changed;
     }
 
     if (solveUtils.narrowCluesDistribution(index, line)) {
       changed = true;
     }
+
+    const clue = line.clues[index];
+    const emptyBlocks = solveUtils.getEmptyBlocks(bounds, cells);
+    emptyBlocks.forEach(block => {
+      const bclue = solveUtils.detectBlockClue(block, line.distribution);
+
+      if (bclue && bclue[0] === clue && clue > block[1] - block[0] + 1) {
+        for (let i = block[0]; i <= block[1]; i++) {
+          if (cells[i] === 0) markAsEmpty(line, i)
+        }
+      }
+    });
+
   });
 
   line.cells.forEach((cell, index) => {

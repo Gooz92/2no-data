@@ -25,10 +25,7 @@ module.exports = {
     const blockBounds = solveUtils.simpleBlock(clue, bounds);
 
     if (blockBounds.length > 0) {
-      return {
-        clue: [ clue, index ],
-        bounds: blockBounds
-      };
+     return blockBounds;
     }
 
     return null;
