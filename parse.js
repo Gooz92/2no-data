@@ -28,14 +28,18 @@ forEachFile('./data/xml', path => {
   
       if (puzzle.color.length === 2) {
         const clues = parseClues(puzzle.clues);
+
+        const dims = clues.map(c => c.length)
   
-        if (clues[0].length === 10 && clues[1].length === 10) {
+        if (dims.every(dim => dim === 12 || dim === 14)) {
           const id = path.match(/(\d+)\.xml/)[1];
           console.log(id)
-          writeFileSync(`./data/webpbn/${id}.json`, JSON.stringify(clues));
+          writeFileSync(`./data/webpbn/${id}-${dims.join('x')}.json`, JSON.stringify(clues));
         }
       }
     });
-  } catch (e) {}
+  } catch (e) {
+    console.log(e)
+  }
 
 });
