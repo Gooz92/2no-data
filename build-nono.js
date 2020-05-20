@@ -5,16 +5,7 @@ function buildLine(clues, length, index, side) {
   const bounds = solveUtils.calculateBounds(clues, length);
   const distribution = solveUtils.buildCluesDistribution(clues, bounds);
 
-  return {
-    clues,
-    changed: false,
-    pristine: true,
-    blocks: [],
-    side,
-    bounds,
-    distribution,
-    index
-  };
+  return { clues, bounds, distribution, side, index };
 }
 
 module.exports = function (horizontalClues, verticalClues) {

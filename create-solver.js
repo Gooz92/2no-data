@@ -39,7 +39,7 @@ function markAsFilled(line, index) {
 
 function getBlocks(line) {
   
-  const cells = line.cells.map(c => c.value);
+  const cells = line.cells.map(cell => cell.value);
 
   const blocks = solveUtils.getFilledBlocks([ 0, line.cells.length ], cells);
 
@@ -60,6 +60,91 @@ function getBlocks(line) {
   });
 }
 
+function processBlocks(line, blocks) {
+
+  let changed = false;
+
+  blocks.forEach(block => {
+
+    if (!block.clue) {
+      return
+    }
+
+    if (block.solved) {
+      const empty = lineSolvers.wrapSolvedBlock(line, block);
+
+      if (empty.length > 0) {
+        changed = true;
+        empty.forEach(emptyIndex => {
+          changed = markAsEmpty(line, emptyIndex) || changed;
+        });
+      }
+
+      if (block.clue.length === 2) {
+
+        for (let i = 0; i < block.bounds[0]; i++) {
+          const cellClues = line.distribution[i];
+          if (cellClues.length === 1 && cellClues[0][1] === block.clue[1]) {
+            changed = markAsEmpty(line, i) || changed
+          } else {
+            line.distribution[i] = line.distribution[i].filter(cellClues => {
+              return cellClues[1] !== block.clue[1]
+            });
+          }
+        }
+        for (let i = block.bounds[1] + 1; i < line.cells.length; i++) {
+          const cellClues = line.distribution[i];
+          if (cellClues.length === 1 && cellClues[0][1] === block.clue[1]) {
+            changed = markAsEmpty(line, i) || changed
+          } else {
+            line.distribution[i] = line.distribution[i].filter(cellClues => {
+              return cellClues[1] !== block.clue[1]
+            });
+          }
+        }
+
+        for (let i = block.bounds[0]; i <= block.bounds[1]; i++) {
+          line.distribution[i] = [ block.clue ];
+        }
+
+        for (i = 0; i < line.cells.length; i++) {
+          
+        }
+      }
+
+    } else if (block.clue.length === 2) {
+      const filled = solveUtils.glue(block.clue[0], block.bounds, line.bounds[block.clue[1]]);
+      if (filled.length > 0) {
+        filled.forEach(index => {
+          if (line.cells[index].value !== 1) {
+            changed = markAsFilled(line, index) || changed;
+          }
+        });
+      }
+
+      const [ startBlock, endBlock ] = block.bounds;
+      const [ clueValue, clueIndex ] = block.clue;
+      const blockLength = endBlock - startBlock + 1;
+      const delta = clueValue - blockLength;
+
+      for (let i = 0; i < startBlock - delta; i++) {
+        const cellClues = line.distribution[i];
+        if (cellClues.length === 1 && cellClues[0][1] === clueIndex) {
+          changed = markAsEmpty(line, i) || changed
+        }
+      }
+
+      for (let i = endBlock + delta + 1; i < line.distribution.length; i++) {
+        const cellClues = line.distribution[i];
+        if (cellClues.length === 1 && cellClues[0][1] === clueIndex) {
+          changed = markAsEmpty(line, i) || changed
+        }
+      }
+    }
+  });
+
+  return changed;
+}
 
 function solveLine(line) {
 
@@ -116,76 +201,7 @@ function solveLine(line) {
     });
   }
 
-  blocks.forEach(block => {
-
-    if (!block.clue) {
-      return
-    }
-
-    if (block.solved) {
-      const empty = lineSolvers.wrapSolvedBlock(line, block);
-
-      if (empty.length > 0) {
-        changed = true;
-        empty.forEach(emptyIndex => {
-          changed = markAsEmpty(line, emptyIndex) || changed;
-        });
-      }
-
-      if (block.clue.length === 2) {
-
-        for (let i = 0; i < block.bounds[0]; i++) {
-          const cellClues = line.distribution[i];
-          if (cellClues.length === 1 && cellClues[0][1] === block.clue[1]) {
-            changed = markAsEmpty(line, i) || changed
-          }
-        }
-  
-        for (let i = block.bounds[1] + 1; i < line.cells.length; i++) {
-          const cellClues = line.distribution[i];
-          if (cellClues.length === 1 && cellClues[0][1] === block.clue[1]) {
-            changed = markAsEmpty(line, i) || changed
-          }
-        }
-
-        for (let i = block.bounds[0]; i <= block.bounds[1]; i++) {
-          line.distribution[i] = [ block.clue ];
-        }
-      }
-
-    } else if (block.clue.length === 2) {
-      const filled = solveUtils.glue(block.clue[0], block.bounds, line.bounds[block.clue[1]]);
-      if (filled.length > 0) {
-        filled.forEach(index => {
-          if (line.cells[index].value !== 1) {
-            changed = markAsFilled(line, index) || changed;
-          }
-        });
-      }
-
-      const [ startBlock, endBlock ] = block.bounds;
-      const [ clueValue, clueIndex ] = block.clue;
-      const blockLength = endBlock - startBlock + 1;
-      const delta = clueValue - blockLength;
-
-      for (let i = 0; i < startBlock - delta; i++) {
-        const cellClues = line.distribution[i];
-        if (cellClues.length === 1 && cellClues[0][1] === clueIndex) {
-          changed = markAsEmpty(line, i) || changed
-        }
-      }
-
-      for (let i = endBlock + delta + 1; i < line.distribution.length; i++) {
-        const cellClues = line.distribution[i];
-        if (cellClues.length === 1 && cellClues[0][1] === clueIndex) {
-          changed = markAsEmpty(line, i) || changed
-        }
-      }
-    }
-  });
-
-  line.pristine = false;
-  line.changed = false;
+  changed = processBlocks(line, blocks) || changed;
 
   return changed;
 }
