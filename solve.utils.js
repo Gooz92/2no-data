@@ -230,14 +230,18 @@ const solveUtils = {
 
     const blockLength = endBlock - startBlock + 1;
 
+    // at least one cell might be assigned to one clue
     for (let i = startBlock; i <= endBlock; i++) {
       const cellClues = distribution[i];
       const blockClue = cellClues[0];
-
-      // at least one cell might be assigned to one clue
       if (cellClues.length === 1) {
         return blockClue;
       }
+    }
+
+    for (let i = startBlock; i <= endBlock; i++) {
+      const cellClues = distribution[i];
+      const blockClue = cellClues[0];
 
       const potentialClues = cellClues.filter(([ clueValue ]) => (
        clueValue >= blockLength

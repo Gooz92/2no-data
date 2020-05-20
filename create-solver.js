@@ -48,7 +48,6 @@ function getBlocks(line) {
     const [ start, end ] = bounds;
     const blockLength = end - start + 1;
 
-    
     const isWrapped = (
       (bounds[0] === 0 || cells[bounds[0] - 1] === 2) &&
       (bounds[1] === cells.length - 1 || cells[bounds[1] + 1] === 2)
@@ -73,6 +72,13 @@ function getBlocks(line) {
 function processBlocks(line, blocks) {
 
   let changed = false;
+
+  if (blocks.length === line.clues.length && blocks.every(b => b.solved)) {
+    line.cells.forEach((c, i) => {
+      if (c.value === 0) changed = markAsEmpty(line, i) || changed;
+    });
+    return
+  }
 
   blocks.forEach(block => {
 
@@ -134,11 +140,8 @@ function processBlocks(line, blocks) {
         }
 
         for (let i = block.bounds[0]; i <= block.bounds[1]; i++) {
+          if (line.distribution[i].length > 1) changed = true
           line.distribution[i] = [ block.clue ];
-        }
-
-        for (i = 0; i < line.cells.length; i++) {
-          
         }
       }
 
@@ -176,6 +179,7 @@ function processBlocks(line, blocks) {
   return changed;
 }
 
+window.__solveLine__ = solveLine;
 
 function solveLine(line) {
 
@@ -226,12 +230,6 @@ function solveLine(line) {
 
   const blocks = getBlocks(line);
 
-  if (blocks.every(b => b.solved) && blocks.length === line.clues.length) {
-    line.cells.forEach((c, i) => {
-      if (c.value === 0) changed = markAsEmpty(line, i) || changed;
-    });
-  }
-
   changed = processBlocks(line, blocks) || changed;
 
   return changed;
@@ -268,18 +266,9 @@ module.exports = function createSolver(nonogram) {
         return null;
       }
 
-      if (solveLine(line)) {
-        this.changed = true;
+      while (solveLine(line)) { // TODO
+        this.changed = true
       }
-
-      if (solveLine(line)) {
-        this.changed = true;
-      }
-
-      if (solveLine(line)) {
-        this.changed = true;
-      }
-
 
       return line;
     }
