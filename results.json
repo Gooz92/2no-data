@@ -1,6 +1,6 @@
 [
   [ "1.json", 15, 8, 7, 0 ],
-  [ "bicycle.json", 56, 26, 30, 44 ],
+  [ "bicycle.json", 66, 29, 37, 34 ],
   [ "boat.json", 100, 44, 56, 0 ],
   [ "chicken.json", 33, 16, 17, 67 ],
   [ "skater.json", 100, 52, 48, 0 ],
@@ -23,7 +23,7 @@
   [ "z.json", 25, 13, 12, 0 ],
   [ "elephant.json", 64, 40, 24, 0 ],
   [ "tower.json", 64, 38, 26, 0 ],
-  [ "crazy-man-12x14.json", 163, 76, 87, 5 ],
+  [ "crazy-man-12x14.json", 165, 78, 87, 3 ],
   [ "duck-10x6.json", 60, 25, 35, 0 ],
   [ "flask-7x8.json", 56, 38, 18, 0 ],
   [ "house-7x7.json", 49, 24, 25, 0 ],

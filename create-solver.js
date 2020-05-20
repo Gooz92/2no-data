@@ -47,6 +47,16 @@ function getBlocks(line) {
     const block = { bounds };
     const [ start, end ] = bounds;
     const blockLength = end - start + 1;
+
+    
+    const isWrapped = (
+      (bounds[0] === 0 || cells[bounds[0] - 1] === 2) &&
+      (bounds[1] === cells.length - 1 || cells[bounds[1] + 1] === 2)
+    );
+
+    block.isWrapped = isWrapped;
+    block.length = blockLength;
+
     const clue = solveUtils.detectBlockClue(bounds, line.distribution);
 
     if (clue === null) {
@@ -66,6 +76,17 @@ function processBlocks(line, blocks) {
 
   blocks.forEach(block => {
 
+    if (block.isWrapped) {
+      for (let i = block.bounds[0]; i <= block.bounds[1]; i++) {
+        const cellClues = line.distribution[i];
+        line.distribution[i] = cellClues.filter(clue => clue[0] === block.length);
+
+        if (line.distribution[i].length < cellClues.length) {
+          changed = true;
+        }
+      }
+    }
+
     if (!block.clue) {
       return
     }
@@ -83,23 +104,32 @@ function processBlocks(line, blocks) {
       if (block.clue.length === 2) {
 
         for (let i = 0; i < block.bounds[0]; i++) {
-          const cellClues = line.distribution[i];
+          const cellClues = line.distribution[i].filter(cellClues => {
+            return cellClues[1] !== block.clue[1]
+          });
+
+          if (cellClues.length < line.distribution[i].length) {
+            line.distribution[i] = cellClues;
+            changed = true;
+          }
+
           if (cellClues.length === 1 && cellClues[0][1] === block.clue[1]) {
             changed = markAsEmpty(line, i) || changed
-          } else {
-            line.distribution[i] = line.distribution[i].filter(cellClues => {
-              return cellClues[1] !== block.clue[1]
-            });
           }
         }
+  
         for (let i = block.bounds[1] + 1; i < line.cells.length; i++) {
-          const cellClues = line.distribution[i];
+          const cellClues = line.distribution[i].filter(cellClues => {
+            return cellClues[1] !== block.clue[1]
+          });
+
+          if (cellClues.length < line.distribution[i].length) {
+            line.distribution[i] = cellClues;
+            changed = true;
+          }
+        
           if (cellClues.length === 1 && cellClues[0][1] === block.clue[1]) {
             changed = markAsEmpty(line, i) || changed
-          } else {
-            line.distribution[i] = line.distribution[i].filter(cellClues => {
-              return cellClues[1] !== block.clue[1]
-            });
           }
         }
 
@@ -145,6 +175,7 @@ function processBlocks(line, blocks) {
 
   return changed;
 }
+
 
 function solveLine(line) {
 
@@ -240,6 +271,15 @@ module.exports = function createSolver(nonogram) {
       if (solveLine(line)) {
         this.changed = true;
       }
+
+      if (solveLine(line)) {
+        this.changed = true;
+      }
+
+      if (solveLine(line)) {
+        this.changed = true;
+      }
+
 
       return line;
     }
