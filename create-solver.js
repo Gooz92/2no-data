@@ -179,7 +179,7 @@ function processBlocks(line, blocks) {
   return changed;
 }
 
-window.__solveLine__ = solveLine;
+// window.__solveLine__ = solveLine;
 
 function solveLine(line) {
 
