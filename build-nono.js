@@ -8,7 +8,7 @@ function buildLine(clues, length, index, side) {
   return { clues, bounds, distribution, side, index };
 }
 
-module.exports = function (horizontalClues, verticalClues) {
+function buildNono(horizontalClues, verticalClues) {
   const rows = horizontalClues.map((clues, index) => {
     const row = buildLine(clues, verticalClues.length, index, 0);
     row.cells = utils.generateArray(verticalClues.length, () => ({ value: 0, lines: [ row ] }));
@@ -33,3 +33,5 @@ module.exports = function (horizontalClues, verticalClues) {
 
   return { rows, cols, lines: [ ...rows, ...cols ] };
 }
+
+module.exports = { buildLine, buildNono };

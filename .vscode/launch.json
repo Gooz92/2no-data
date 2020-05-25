@@ -7,8 +7,14 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Launch nono tests",
+      "name": "Launch solve tests",
       "program": "${workspaceFolder}/test-solve.js"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Launch unit tests",
+      "program": "${workspaceFolder}/runTests.js"
     },
     {
       "type": "node",

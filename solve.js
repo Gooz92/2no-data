@@ -1,5 +1,5 @@
 const solveUtils = require('./solve.utils.js'),
-  buildNono = require('./build-nono.js'),
+  { buildNono } = require('./build-nono.js'),
   createSolver = require('./create-solver.js');
 
 module.exports = (hClues, vClues) => {

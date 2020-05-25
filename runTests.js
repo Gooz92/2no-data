@@ -4,7 +4,8 @@ const config = require('./tests.js'),
 const methods = {
   ...require('./solve.utils.js'),
   ...require('./validate.js'),
-  ...require('./result.utils.js')
+  ...require('./result.utils.js'),
+  solveLine: require('./solve-line.js')
 };
 
 Object.keys(config)
