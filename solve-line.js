@@ -123,16 +123,26 @@ function onFilledBlock(start, end, line) {
     const delta = clueValue - length;
 
     for (let i = 0; i < start - delta; i++) {
-      const cellClues = line.distribution[i];
-      if (cellClues.length === 1 && cellClues[0][1] === clueIndex) {
+      const cellClues = line.distribution[i].filter(c => c[1] !== clueIndex);
+      if (cellClues.length === 0) {
         changed = markAsEmpty(line, i) || changed
+      }
+
+      if (cellClues.length < line.distribution[i].length) {
+        line.distribution[i] = cellClues;
+        changed = true;
       }
     }
 
     for (let i = end + delta + 1; i < line.distribution.length; i++) {
-      const cellClues = line.distribution[i];
-      if (cellClues.length === 1 && cellClues[0][1] === clueIndex) {
+      const cellClues = line.distribution[i].filter(c => c[1] !== clueIndex);
+      if (cellClues.length === 0) {
         changed = markAsEmpty(line, i) || changed
+      }
+
+      if (cellClues.length < line.distribution[i].length) {
+        line.distribution[i] = cellClues;
+        changed = true;
       }
     }
   }
