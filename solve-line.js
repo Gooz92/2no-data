@@ -217,20 +217,6 @@ function solveLine(line) {
       changed = true;
     }
 
-    const clue = line.clues[index];
-    const emptyBlocks = solveUtils.getEmptyBlocks(bounds, cells);
-    
-    // mark hole as empty if it cannot contain block 
-    emptyBlocks.forEach(block => {
-      const bclue = solveUtils.detectBlockClue(block, line.distribution);
-
-      if (bclue && bclue[0] === clue && clue > block[1] - block[0] + 1) {
-        for (let i = block[0]; i <= block[1]; i++) {
-          if (cells[i] === 0) changed = markAsEmpty(line, i) || changed
-        }
-      }
-    });
-
   });
 
   return changed;
