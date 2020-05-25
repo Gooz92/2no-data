@@ -1,8 +1,7 @@
 const solveUtils = require('./solve.utils.js');
 
 module.exports = {
-  solveBounds(line, bounds, index) {
-    const clue = line.clues[index];
+  solveBounds(line, bounds, clue) {
     const blockBounds = solveUtils.simpleBlock(clue, bounds);
 
     if (blockBounds.length > 0) {
@@ -12,8 +11,7 @@ module.exports = {
     return null;
   },
 
-  wrapSolvedBlock(line, block) {
-    const [ start, end ] = block.bounds;
+  wrapSolvedBlock(line, [ start, end ]) {
     const empty = [];
 
     if (start > 0 && line.cells[start - 1].value !== 2) {

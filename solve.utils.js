@@ -28,11 +28,15 @@ const solveUtils = {
     return bounds;
   },
 
+  isAnotherClueBounds(cellClues, clueIndex) {
+    return cellClues.every(clue => clue[1] !== clueIndex);
+  },
+
   narrowBounds1(bounds, cells, clueIndex, distribution) {
     const [ start, end ] = bounds;
 
     let i = start;
-    while (cells[i] === 2 || (distribution[i].length === 1 && distribution[i][0][1] !== clueIndex)) {
+    while (cells[i] === 2 || solveUtils.isAnotherClueBounds(distribution[i], clueIndex)) {
       i++;
     }
 
@@ -40,7 +44,7 @@ const solveUtils = {
 
     i = end;
 
-    while (cells[i] === 2 || (distribution[i].length === 1 && distribution[i][0][1] !== clueIndex)) {
+    while (cells[i] === 2 || solveUtils.isAnotherClueBounds(distribution[i], clueIndex)) {
       i--;
     }
 
@@ -175,6 +179,25 @@ const solveUtils = {
     }
 
     return distribution;
+  },
+
+  getBlocks(cells) {
+    const blocks = [ [], [], [] ];
+
+    let blockType = cells[0], start = 0;
+
+    for (let i = 1; i < cells.length; i++) {
+
+      if (blockType !== cells[i]) {
+        blocks[blockType].push([ start, i - 1 ]);
+        blockType = cells[i];
+        start = i;
+      }
+    }
+
+    blocks[blockType].push([ start, cells.length - 1 ]);
+
+    return blocks;
   },
 
   getEmptyBlocks([ left, right ], cells) {

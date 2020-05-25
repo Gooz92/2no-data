@@ -16,6 +16,11 @@ const cases  = [
     id: 'glue',
     line: [ [ 4 ], [ 0, 1, 0, 0, 0, 0, 0, 0 ] ],
     result: [ 0, 1, 1, 1, 0, 2, 2, 2 ]
+  },
+  {
+    id: 'fill hole',
+    line: [ [ 3 ], [ 0, 0, 0, 2, 0, 2, 0, 0, 0 ] ],
+    result: [ 0, 0, 0, 2, 2, 2, 0, 0, 0 ]
   }
 ].map(({ line: [ clues, cells ], result }) => {
   const line = buildLine(clues, cells.length, 0, 0)
