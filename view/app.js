@@ -4,14 +4,15 @@ const { buildNono } = require('../build-nono.js');
 const createSolver = require('../create-solver.js');
 const solveUtils = require('../solve.utils.js');
 
-const [ hClues, vClues ] = require('../data/bw/10x10/bicycle.json');
+const [ hClues, vClues ] = require('../data/bw/10x10/ant.json');
 
-const nonogramComponent = buildNonogramComponent(hClues, vClues, 42);
+const nonogramComponent = buildNonogramComponent(hClues, vClues, 36);
 
 const nono = buildNono(hClues, vClues)
 const solver = createSolver(nono);
 
 window.__nono__ = nono;
+window.__nono_cmp__ = nonogramComponent;
 
 document.addEventListener('DOMContentLoaded', () => {
   document.body.appendChild(nonogramComponent.element);

@@ -184,7 +184,7 @@ export default function (hClues, vClues, cellSize) {
       for (let i = 0; i < hClues.length; i++) {
         for (let j = 0; j < vClues.length; j++) {
           field.push(
-            component.getCell(i, j).classList.contains('filled') ? 1 : 0
+            component.cells[i][j].classList.contains('filled') ? 1 : 0
           );
         }
       }

@@ -31,9 +31,8 @@ forEachFile('./data/xml', path => {
 
         const dims = clues.map(c => c.length)
   
-        if (dims.every(dim => dim === 12 || dim === 14)) {
+        if (dims.every(dim => [ 10, 12, 14 ].includes(dim))) {
           const id = path.match(/(\d+)\.xml/)[1];
-          console.log(id)
           writeFileSync(`./data/webpbn/${id}-${dims.join('x')}.json`, JSON.stringify(clues));
         }
       }

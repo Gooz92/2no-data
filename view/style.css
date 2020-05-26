@@ -5,12 +5,8 @@
 
 .v-clues div,
 .h-clues div {
-  width: 40px;
-  height: 40px;
-  min-width: 40px;
-  min-height: 40px;
-  line-height: 40px;
-  font-size: 24px;
+  line-height: 36px;
+  font-size: 20px;
   text-align: center;
   font-weight: 500;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
