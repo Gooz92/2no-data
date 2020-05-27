@@ -29,14 +29,14 @@ const solveUtils = {
   },
 
   isAnotherClueBounds(cellClues, clueIndex) {
-    return cellClues.every(clue => clue[1] !== clueIndex);
+    return cellClues.length === 0 || cellClues.every(clue => clue[1] !== clueIndex);
   },
 
-  narrowBounds1(bounds, cells, clueIndex, distribution) {
+  narrowBounds1(bounds, clueIndex, distribution) {
     const [ start, end ] = bounds;
 
     let i = start;
-    while (cells[i] === 2 || solveUtils.isAnotherClueBounds(distribution[i], clueIndex)) {
+    while (solveUtils.isAnotherClueBounds(distribution[i], clueIndex)) {
       i++;
     }
 
@@ -44,7 +44,7 @@ const solveUtils = {
 
     i = end;
 
-    while (cells[i] === 2 || solveUtils.isAnotherClueBounds(distribution[i], clueIndex)) {
+    while (solveUtils.isAnotherClueBounds(distribution[i], clueIndex)) {
       i--;
     }
 
@@ -53,20 +53,20 @@ const solveUtils = {
     return [ newStart, newEnd ];
   },
 
-  narrowBounds2(filledBlock, bounds, cells) {
+  narrowBounds2(filledBlock, bounds, distribution, clueIndex) {
     const [ blockStart, blockEnd ] = filledBlock;
     const [ start, end ] = bounds;
 
     let [ newStart, newEnd ] = bounds;
 
     for (let i = start; i <= blockStart - 1; i++) {
-      if (cells[i] === 2) {
+      if (solveUtils.isAnotherClueBounds(distribution[i], clueIndex)) {
         newStart = i + 1;
       }
     }
     
     for (let i = end; i >= blockEnd + 1; i--) {
-      if (cells[i] === 2) {
+      if (solveUtils.isAnotherClueBounds(distribution[i], clueIndex)) {
         newEnd = i - 1;
       }
     }
@@ -75,7 +75,7 @@ const solveUtils = {
   },
 
   narrowBounds(bounds, cells, index, distribution) {
-    const [ s1, e1 ] = solveUtils.narrowBounds1(bounds, cells, index, distribution);
+    const [ s1, e1 ] = solveUtils.narrowBounds1(bounds, index, distribution);
 
     const blocks = solveUtils.getFilledBlocks(bounds, cells);
 
@@ -86,7 +86,7 @@ const solveUtils = {
     const blockClue = solveUtils.detectBlockClue(blocks[0], distribution);
 
     if (blockClue && blockClue[1] === index) {
-      const [ s2, e2 ] = solveUtils.narrowBounds2(blocks[0], bounds, cells);
+      const [ s2, e2 ] = solveUtils.narrowBounds2(blocks[0], bounds, distribution, index);
 
       return [
         Math.max(s1, s2),

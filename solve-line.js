@@ -13,10 +13,16 @@ function fillBlock(line, blockBounds) {
   return changed;
 }
 
+function getPerpendicularLine(cell, line) {
+  return cell.lines.find(l => l !== line);
+}
+
 function markAsEmpty(line, index) {
-  const cell = line.cells[index];  
+  const cell = line.cells[index];
   const changed = cell.value === 0;
   cell.value = 2;
+  const pl = getPerpendicularLine(cell, line);
+  pl.distribution[pl.cells.indexOf(cell)] = [];
   line.distribution[index] = [];
   return changed;
 }
