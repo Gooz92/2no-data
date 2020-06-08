@@ -29,11 +29,11 @@ const cases  = [
   //   line: [ [ 1, 2 ], [ 0, 0, 1, 2, 0, 0, 0 ] ],
   //   result: [ 2, 2, 1, 2, 0, 1, 0 ]
   // }
-  {
-    id: '?',
-    line: [ [ 2, 4 ], [ 2, 0, 1, 0, 0, 2, 1, 0, 0, 0 ] ],
-    result: [ 2, 0, 1, 0, 2, 2, 1, 1, 1, 1 ]
-  }
+  // {
+  //   id: '?',
+  //   line: [ [ 2, 4 ], [ 2, 0, 1, 0, 0, 2, 1, 0, 0, 0 ] ],
+  //   result: [ 2, 0, 1, 0, 2, 2, 1, 1, 1, 1 ]
+  // }
 ].map(({ line: [ clues, cells ], result }) => {
   const line = buildLine(clues, cells.length, 0, 0)
   line.cells = cells.map(value => ({ value }));

@@ -32,6 +32,7 @@ const solveUtils = {
     return cellClues.length === 0 || cellClues.every(clue => clue[1] !== clueIndex);
   },
 
+  // to remove after impl mult bounds model (?)
   narrowBounds1(bounds, clueIndex, distribution) {
     const [ start, end ] = bounds;
 
@@ -264,7 +265,6 @@ const solveUtils = {
 
     for (let i = startBlock; i <= endBlock; i++) {
       const cellClues = distribution[i];
-      const blockClue = cellClues[0];
 
       const potentialClues = cellClues.filter(([ clueValue ]) => (
        clueValue >= blockLength
@@ -337,6 +337,43 @@ const solveUtils = {
     } while (i < allClues.length);
 
     return allClues;
+  },
+
+  preBuildBounds(distribution) {
+    const bounds = [];
+
+    for (let i = 0; i < distribution.length; i++) {
+      const cellClues = distribution[i];
+      for (let j = 0; j < cellClues.length; j++) {
+        const clueIndex = cellClues[j][1];
+
+        if (!bounds[clueIndex]) {
+          bounds[clueIndex] = [ [ i, i ] ];
+        } else {
+          const lastBounds = bounds[clueIndex][bounds[clueIndex].length - 1];
+          if (i - lastBounds[1] > 1) {
+            bounds[clueIndex].push([ i, i ]);
+          } else {
+            lastBounds[1] = i;
+          }
+        }
+      }
+    }
+
+    return bounds;
+  },
+
+  filterShortBounds(bounds, clues) {
+    return bounds.map((clueBounds, clueIndex) => {
+      return clueBounds.filter(bounds => {
+        return bounds[1] - bounds[0] + 1 >= clues[clueIndex];
+      })
+    });
+  },
+
+  buildBounds(distribution, clues) { // TODO test and use
+    const bounds = solveUtils.preBuildBounds(distribution);
+    return solveUtils.filterShortBounds(bounds, clues);
   },
 
   getAbsoluteIndex(lineIndex, side, cellIndex) {
