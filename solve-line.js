@@ -210,8 +210,6 @@ function solveLine(line) {
 
   changed = processBlocks(blocks, line) || changed;
 
-  const bounds = solveUtils.preBuildBounds(line.distribution);
-
   line.bounds.forEach((bounds, index) => {
     const newBounds = solveUtils.narrowBounds(bounds, cells, index, line.distribution);
 

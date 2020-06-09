@@ -364,11 +364,9 @@ const solveUtils = {
   },
 
   filterShortBounds(bounds, clues) {
-    return bounds.map((clueBounds, clueIndex) => {
-      return clueBounds.filter(bounds => {
-        return bounds[1] - bounds[0] + 1 >= clues[clueIndex];
-      })
-    });
+    return bounds.map((clueBounds, clueIndex) => (
+      clueBounds.filter(bounds => bounds[1] - bounds[0] + 1 >= clues[clueIndex])
+    ));
   },
 
   buildBounds(distribution, clues) { // TODO test and use
