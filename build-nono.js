@@ -5,7 +5,7 @@ function buildLine(clues, length, index, side) {
   const bounds = solveUtils.calculateBounds(clues, length);
   const distribution = solveUtils.buildCluesDistribution(clues, bounds);
 
-  return { clues, bounds, distribution, side, index };
+  return { clues, distribution, side, index };
 }
 
 function buildNono(horizontalClues, verticalClues) {

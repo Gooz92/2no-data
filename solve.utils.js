@@ -89,35 +89,6 @@ const solveUtils = {
     return [];
   },
 
-  glue(clue, block, bounds) {
-
-    const filled = [];
-
-    const [ start, end ] = bounds;
-    const [ startBlock, endBlock ] = block;
-    const delta = clue - endBlock + startBlock - 1;
-
-    const leftPadding = startBlock - start;
-    const addToRight = delta - leftPadding;
-
-    for (let i = endBlock + 1; i <= endBlock + addToRight && i < end; i++) {
-      filled.push(i);
-    }
-
-    const rightPadding = end - endBlock;
-    const addToLeft = delta - rightPadding;
-
-    const s = startBlock - addToLeft;
-
-    if (s < 0) return filled;
-
-    for (let i = s; i < startBlock; i++) {
-      filled.push(i);
-    }
-
-    return filled;
-  },
-
   buildCluesDistribution(clues, bounds) {
     const length = bounds[bounds.length - 1][1] + 1;
     const distribution = [];
@@ -155,26 +126,6 @@ const solveUtils = {
     return blocks;
   },
 
-  getEmptyBlocks([ left, right ], cells) {
-    const ranges = [];
-    let inBlock = false;
-    let start = 0;
-
-    for (let i = left; i <= right; i++) {
-
-      if (cells[i] === 0 && (i === 0 || cells[i - 1] === 2)) {
-        if (inBlock) end = i;
-        else start = i;
-        inBlock = true;
-      } else if (inBlock && cells[i] !== 0) {
-        inBlock = false;
-        if (cells[i] === 2) ranges.push([ start, i - 1]);
-      }
-    }
-
-    return ranges;
-  },
-
   getRanges([ left, right ], cells, status) { 
     const ranges = [];
     let inBlock = false;
@@ -197,10 +148,6 @@ const solveUtils = {
     }
 
     return ranges;
-  },
-
-  getFilledBlocks([ left, right ], cells) {
-    return solveUtils.getRanges([ left, right ], cells, FILLED)
   },
 
   detectBlockClue(block, distribution) {
@@ -239,37 +186,6 @@ const solveUtils = {
     }
 
     return null;
-  },
-
-  // remove clues from distribution for cells outside bounds
-  narrowCluesDistribution(clueIndex, line) {
-    const bounds = line.bounds[clueIndex];
-    const distribution = line.distribution;
-    const [ start, end ] = bounds;
-
-    let changed = false;
-
-    for (let i = 0; i < start; i++) {
-      const cellClues = distribution[i];
-      const newCellClues = cellClues.filter(([ clueValue, cellClueIndex ]) => cellClueIndex !== clueIndex);
-
-      if (newCellClues.length < cellClues.length) {
-        changed = true;
-        distribution[i] = newCellClues;
-      }
-    }
-
-    for (let i = end + 1; i < distribution.length; i++) {
-      const cellClues = distribution[i];
-      const newCellClues = cellClues.filter(([ clueValue, cellClueIndex ]) => cellClueIndex !== clueIndex);
-
-      if (newCellClues.length < cellClues.length) {
-        changed = true;
-        distribution[i] = newCellClues;
-      }
-    }
-
-    return changed;
   },
 
   generateLineClues(length) {

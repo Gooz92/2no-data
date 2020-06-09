@@ -1,8 +1,5 @@
 # TODO
 
-
-*  buildBounds(distribution, clues) // TODO test and use
-
 * test line solvers
  - Make line solvers pure functions
  - test utils for adapt test conf (calc distibution and bounds if the are not def)
