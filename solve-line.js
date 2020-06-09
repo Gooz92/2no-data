@@ -34,7 +34,7 @@ function markAsFilled(line, index) {
   return changed;
 }
 
-function getBlockAttributes(bounds, cells, distribution) {
+function getBlockAttributes(bounds, cells, distribution, clues) {
   const [ start, end ] = bounds;
   const length = end - start + 1;
 
@@ -50,11 +50,11 @@ function getBlockAttributes(bounds, cells, distribution) {
   for (let i = 0; i < start; i++) {
     if (distribution[i].length > 0) {
       isFirst = false;
-      break
+      break;
     }
   }
 
-  if (isFirst) clue = distribution[start].find(clue => clue[1] === 0)
+  if (isFirst) clue = [ clues[0], 0 ];
 
   if (clue === null) {
     return { isWrapped, length };
@@ -78,7 +78,7 @@ function onFilledBlock(start, end, line) {
     }
   }
 
-  const { clue, solved, isWrapped, length } = getBlockAttributes([ start, end ], cells, line.distribution);
+  const { clue, solved, isWrapped, length } = getBlockAttributes([ start, end ], cells, line.distribution, line.clues);
 
   if (isWrapped) {
     for (let i = start; i <= end; i++) {
