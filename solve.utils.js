@@ -32,70 +32,24 @@ const solveUtils = {
     return cellClues.length === 0 || cellClues.every(clue => clue[1] !== clueIndex);
   },
 
-  // to remove after impl mult bounds model (?)
-  narrowBounds1(bounds, clueIndex, distribution) {
-    const [ start, end ] = bounds;
+  filterClueBounds(clueIndex, boundsIndex, clueBounds, distribution) {
+    let changed = false;
 
-    let i = start;
-    while (solveUtils.isAnotherClueBounds(distribution[i], clueIndex)) {
-      i++;
-    }
+    for (let i = 0; i < clueBounds.length; i++) {
+      if (i !== boundsIndex) {
+        const [ start, end ] = clueBounds[i];
+        for (let j = start; j <= end; j++) {
+          const cellClues = distribution[j].filter(clue => clue[1] != clueIndex);
 
-    const newStart = i;
-
-    i = end;
-
-    while (solveUtils.isAnotherClueBounds(distribution[i], clueIndex)) {
-      i--;
-    }
-
-    const newEnd = i;
-    
-    return [ newStart, newEnd ];
-  },
-
-  narrowBounds2(filledBlock, bounds, distribution, clueIndex) {
-    const [ blockStart, blockEnd ] = filledBlock;
-    const [ start, end ] = bounds;
-
-    let [ newStart, newEnd ] = bounds;
-
-    for (let i = start; i <= blockStart - 1; i++) {
-      if (solveUtils.isAnotherClueBounds(distribution[i], clueIndex)) {
-        newStart = i + 1;
-      }
-    }
-    
-    for (let i = end; i >= blockEnd + 1; i--) {
-      if (solveUtils.isAnotherClueBounds(distribution[i], clueIndex)) {
-        newEnd = i - 1;
+          if (cellClues.length < distribution[j]) {
+            distribution[j] = cellClues;
+            changed = true;
+          }
+        }
       }
     }
 
-    return [ newStart, newEnd ];
-  },
-
-  narrowBounds(bounds, cells, index, distribution) {
-    const [ s1, e1 ] = solveUtils.narrowBounds1(bounds, index, distribution);
-
-    const blocks = solveUtils.getFilledBlocks(bounds, cells);
-
-    if (blocks.length !== 1) {
-      return [ s1, e1 ];
-    };
-
-    const blockClue = solveUtils.detectBlockClue(blocks[0], distribution);
-
-    if (blockClue && blockClue[1] === index) {
-      const [ s2, e2 ] = solveUtils.narrowBounds2(blocks[0], bounds, distribution, index);
-
-      return [
-        Math.max(s1, s2),
-        Math.min(e1, e2)
-      ];
-    }
-
-    return [ s1, e1 ];
+    return changed;
   },
 
   buildOppositeSideBlocks(sideBlocks, opSideLength) {

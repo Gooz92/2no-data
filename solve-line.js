@@ -116,15 +116,15 @@ function onFilledBlock(start, end, line) {
       }
     }
   } else if (clue && clue.length === 2) {
-    const filled = solveUtils.glue(clue[0], [ start, end ], line.bounds[clue[1]]);
-    if (filled.length > 0) {
-      filled.forEach(index => {
-        if (line.cells[index].value !== 1) {
-          changed = markAsFilled(line, index) || changed;
-        }
-      });
-    }
 
+    // const filled = solveUtils.glue(clue[0], [ start, end ], line.bounds[clue[1]]);
+    // if (filled.length > 0) {
+    //   filled.forEach(index => {
+    //     if (line.cells[index].value !== 1) {
+    //       changed = markAsFilled(line, index) || changed;
+    //     }
+    //   });
+    // }
     const [ clueValue, clueIndex ] = clue
     const delta = clueValue - length;
 
@@ -208,32 +208,35 @@ function solveLine(line) {
 
   const blocks = solveUtils.getBlocks(cells);
 
+  const lineBounds = solveUtils.buildBounds(line.distribution, line.clues);
+
+  for (let i = 0; i < lineBounds.length; i++) {
+    const clueBounds = lineBounds[i];
+
+    if (clueBounds.length === 1) {
+      const block = lineSolvers.solveBounds(line, clueBounds[0], line.clues[i]);
+
+      if (block !== null) {
+        changed = fillBlock(line, block) || changed;
+      }
+    }
+
+    for (let j = 0; j < clueBounds.length; j++) {
+      const bounds = clueBounds[j];
+
+      const blocks = solveUtils.getFilledBlocks(bounds, cells);
+
+      if (blocks.length === 1) {
+        const blockClue = solveUtils.detectBlockClue(blocks[0], line.distribution);
+
+        if (blockClue && blockClue[1] === i) {
+          changed = solveUtils.filterClueBounds(i, j, clueBounds, line.distribution) || changed;
+        }
+      }
+    }
+  }
+
   changed = processBlocks(blocks, line) || changed;
-
-  line.bounds.forEach((bounds, index) => {
-    const newBounds = solveUtils.narrowBounds(bounds, cells, index, line.distribution);
-
-    if (newBounds[0] > bounds[0]) {
-      bounds[0] = newBounds[0];
-      changed = true;
-    }
-
-    if (newBounds[1] < bounds[1]) {
-      bounds[1] = newBounds[1];
-      changed = true;
-    }
-
-    const block = lineSolvers.solveBounds(line, bounds, line.clues[index]);
-
-    if (block !== null) {
-      changed = fillBlock(line, block) || changed;
-    }
-
-    if (solveUtils.narrowCluesDistribution(index, line)) {
-      changed = true;
-    }
-
-  });
 
   return changed;
 }
