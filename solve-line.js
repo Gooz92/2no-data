@@ -43,7 +43,18 @@ function getBlockAttributes(bounds, cells, distribution) {
     (bounds[1] === cells.length - 1 || cells[bounds[1] + 1] === 2)
   );
 
-  const clue = solveUtils.detectBlockClue(bounds, distribution);
+  let clue = solveUtils.detectBlockClue(bounds, distribution);
+
+  let isFirst = true
+
+  for (let i = 0; i < start; i++) {
+    if (distribution[i].length > 0) {
+      isFirst = false;
+      break
+    }
+  }
+
+  if (isFirst) clue = distribution[start].find(clue => clue[1] === 0)
 
   if (clue === null) {
     return { isWrapped, length };
@@ -67,7 +78,7 @@ function onFilledBlock(start, end, line) {
     }
   }
 
-  let { clue, solved, isWrapped, length } = getBlockAttributes([ start, end ], cells, line.distribution);
+  const { clue, solved, isWrapped, length } = getBlockAttributes([ start, end ], cells, line.distribution);
 
   if (isWrapped) {
     for (let i = start; i <= end; i++) {
@@ -89,17 +100,6 @@ function onFilledBlock(start, end, line) {
         changed = markAsEmpty(line, emptyIndex) || changed;
       });
     }
-
-    let isFirst = true
-
-    for (let i = 0; i < start; i++) {
-      if (line.distribution[i].length > 0) {
-        isFirst = false;
-        break
-      }
-    }
-
-    if (isFirst) clue = [ clue[0], 0 ]
 
     if (clue.length === 2) {
 
