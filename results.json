@@ -1,5 +1,5 @@
 [
-  [ "ant.json", 99, 49, 50, 1 ],
+  [ "ant.json", 100, 49, 51, 0 ],
   [ "bicycle.json", 92, 38, 54, 8 ],
   [ "boat.json", 100, 44, 56, 0 ],
   [ "carrot.json", 100, 40, 60, 0 ],
@@ -8,7 +8,7 @@
   [ "cherries.json", 40, 23, 17, 104 ],
   [ "rocking-horse.json", 144, 65, 79, 0 ],
   [ "tick.json", 64, 39, 25, 132 ],
-  [ "turtle.json", 219, 114, 105, 6 ],
+  [ "turtle.json", 225, 118, 107, 0 ],
   [ "elephant.json", 64, 40, 24, 0 ],
   [ "tower.json", 64, 38, 26, 0 ],
   [ "crazy-man-12x14.json", 167, 79, 88, 1 ],

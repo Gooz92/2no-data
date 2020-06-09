@@ -67,7 +67,7 @@ function onFilledBlock(start, end, line) {
     }
   }
 
-  const { clue, solved, isWrapped, length } = getBlockAttributes([ start, end ], cells, line.distribution);
+  let { clue, solved, isWrapped, length } = getBlockAttributes([ start, end ], cells, line.distribution);
 
   if (isWrapped) {
     for (let i = start; i <= end; i++) {
@@ -89,6 +89,17 @@ function onFilledBlock(start, end, line) {
         changed = markAsEmpty(line, emptyIndex) || changed;
       });
     }
+
+    let isFirst = true
+
+    for (let i = 0; i < start; i++) {
+      if (line.distribution[i].length > 0) {
+        isFirst = false;
+        break
+      }
+    }
+
+    if (isFirst) clue = [ clue[0], 0 ]
 
     if (clue.length === 2) {
 

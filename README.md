@@ -5,5 +5,4 @@
  - test utils for adapt test conf (calc distibution and bounds if the are not def)
 * is simple boxes applicable to line (sum(ci) + n - 1 + max(ci) < L)
 * merge block
-* analyze blocks and clues order
 * Unit test definition becomes to complex. Resolve somehow...
