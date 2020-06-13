@@ -5,7 +5,7 @@
   [ "carrot.json", 100, 40, 60, 0 ],
   [ "chicken.json", 100, 38, 62, 0 ],
   [ "skater.json", 100, 52, 48, 0 ],
-  [ "cherries.json", 40, 23, 17, 104 ],
+  [ "cherries.json", 83, 42, 41, 61 ],
   [ "rocking-horse.json", 144, 65, 79, 0 ],
   [ "tick.json", 64, 39, 25, 132 ],
   [ "turtle.json", 225, 118, 107, 0 ],

@@ -128,7 +128,7 @@ function onFilledBlock(start, end, line) {
     }
   } else if (clue && clue.length === 2) {
     
-    const [ clueValue, clueIndex ] = clue
+    const [ clueValue, clueIndex ] = clue;
     const delta = clueValue - length;
 
     for (let i = 0; i < start - delta; i++) {
@@ -154,6 +154,14 @@ function onFilledBlock(start, end, line) {
         changed = true;
       }
     }
+  } else if (clue) {
+    debugger
+    const filledBlock = solveUtils.bouncing([ start, end ], clue[0], line.distribution);
+    if (filledBlock !== null) {
+      fillBlock(line, filledBlock);
+      changed = true;
+    }
+    
   }
 
   return changed;

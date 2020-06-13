@@ -239,9 +239,30 @@ const solveUtils = {
     ));
   },
 
-  buildBounds(distribution, clues) { // TODO test and use
+  buildBounds(distribution, clues) {
     const bounds = solveUtils.preBuildBounds(distribution);
     return solveUtils.filterShortBounds(bounds, clues);
+  },
+
+  bouncing(block, blockClue, distribution) {
+
+    const [ start, end ] = block;
+    const blockLength = end - start + 1;
+    const delta = blockClue - blockLength;
+    
+    let i = end, c = 0;
+
+    while (i < distribution.length - 1 && distribution[i++].length > 0) {
+      c++;
+    }
+
+    const d = delta - c + 1;
+
+    if (d > 0) {
+      return [ start - d, start - 1 ];
+    }
+
+    return null;
   },
 
   getAbsoluteIndex(lineIndex, side, cellIndex) {
@@ -250,16 +271,6 @@ const solveUtils = {
 
   getAbsoluteIndexes(lineIndex, side, indexes) {
     return indexes.map(index => solveUtils.getAbsoluteIndex(lineIndex, side, index));
-  },
-
-  fillBlocks(blocks, cells) {
-    blocks.forEach(block => {
-      const [ start, end ] = block;
-
-      for (let i = start; i <= end; i++) {
-        cells[i] = 1;
-      }
-    });
   },
 
   toFlatArray(rows) {
