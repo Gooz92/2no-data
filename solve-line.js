@@ -155,7 +155,6 @@ function onFilledBlock(start, end, line) {
       }
     }
   } else if (clue) {
-    debugger
     const filledBlock = solveUtils.bouncing([ start, end ], clue[0], line.distribution);
     if (filledBlock !== null) {
       fillBlock(line, filledBlock);

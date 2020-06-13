@@ -19,12 +19,22 @@ function getPercentage(solution) {
 
 const results = [];
 
+function parseData(data) {
+  if (Array.isArray(data)) {
+    const [ hClues, vClues, field ] = data;
+    return { clues: [ hClues, vClues ], field };
+  }
+
+  return { clues: data.clues };
+}
+
 forEachFile('./data/bw/', (file, fileName) => {
-  const [ hClues, vClues, field ] = require(file);
-  const solution = solve(hClues, vClues);
+  const data = require(file);
+  const nono = parseData(data);
+  const solution = solve(nono.clues[0], nono.clues[1]);
   const result = getResult(solution);
   results.push([ `"${fileName}"`, ...result ]);
-  console.log(file, getPercentage(solution), getResult(solution), isValid(solution, field));
+  console.log(file, getPercentage(solution), getResult(solution), nono.field ? isValid(solution, nono.field) : '?');
 });
 
 fs.writeFileSync('results.json', stringifyResults(results));
