@@ -153,6 +153,32 @@ const solveUtils = {
   detectBlockClue(block, distribution) {
     const [ startBlock, endBlock ] = block;
 
+    let isFirst = true;
+
+    for (let i = 0; i < startBlock; i++) {
+      if (distribution[i].length > 0) {
+        isFirst = false;
+        break;
+      }
+    }
+  
+    if (isFirst) {
+      return distribution[startBlock].find(clue => clue[1] === 0);
+    }
+
+    let isLast = true;
+
+    for (let i = distribution.length - 1; i > endBlock; i--) {
+      if (distribution[i].length > 0) {
+        isLast = false;
+        break;
+      }
+    }
+  
+    if (isLast) {
+      return distribution[endBlock][distribution[endBlock].length - 1]; // TODO ?
+    }
+
     const blockLength = endBlock - startBlock + 1;
 
     // at least one cell might be assigned to one clue

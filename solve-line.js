@@ -34,7 +34,7 @@ function markAsFilled(line, index) {
   return changed;
 }
 
-function getBlockAttributes(bounds, cells, distribution, clues) {
+function getBlockAttributes(bounds, cells, distribution) {
   const [ start, end ] = bounds;
   const length = end - start + 1;
 
@@ -44,17 +44,6 @@ function getBlockAttributes(bounds, cells, distribution, clues) {
   );
 
   let clue = solveUtils.detectBlockClue(bounds, distribution);
-
-  let isFirst = true
-
-  for (let i = 0; i < start; i++) {
-    if (distribution[i].length > 0) {
-      isFirst = false;
-      break;
-    }
-  }
-
-  if (isFirst) clue = [ clues[0], 0 ];
 
   if (clue === null) {
     return { isWrapped, length };
@@ -154,6 +143,12 @@ function onFilledBlock(start, end, line) {
         changed = true;
       }
     }
+
+    for (let i = start; i <= end; i++) {
+      if (line.distribution[i].length > 1) changed = true;
+      line.distribution[i] = [ clue ];
+    }
+
   } else if (clue) {
     const filledBlock = solveUtils.bouncing([ start, end ], clue[0], line.distribution);
     if (filledBlock !== null) {
@@ -184,6 +179,37 @@ function onUnknownBlock(start, end, line) {
     if (bclue && bclue[0] > end - start + 1) {
       for (let i = start; i <= end; i++) {
         if (line.cells[i].value === 0) changed = markAsEmpty(line, i) || changed
+      }
+    }
+
+    if (bclue) {
+      let sameClues = true;
+      for (let i = start; i <= end; i++) {
+        if (line.distribution[i].some(clue => clue[0] !== bclue[0])) {
+          sameClues = false;
+          break;
+        }
+      }
+      if (sameClues && end - start + 1 === bclue[0]) {
+        let allSolved = true;
+
+        for (let i = 0; i < start; i++) {
+          if (line.cells[i].value === 0 || (line.distribution[i].some(clue => clue[0] === bclue[0]) && line.cells[i].value === 1)) {
+            allSolved = false;
+            break;
+          }
+        }
+
+        for (let i = line.cells.length - 1; i > end; i--) {
+          if (line.cells[i].value === 0 || (line.distribution[i].some(clue => clue[0] === bclue[0]) && line.cells[i].value === 1)) {
+            allSolved = false;
+            break;
+          }
+        }
+
+        if (allSolved) {
+          changed = fillBlock(line, [ start, end ]) || changed;
+        }
       }
     }
   }
